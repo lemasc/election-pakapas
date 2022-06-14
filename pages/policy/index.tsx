@@ -1,41 +1,64 @@
-import { Box, Heading, LinkBox, LinkOverlay, Text } from "@chakra-ui/react";
-import { readdir, readFile } from "fs/promises";
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  Heading,
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  Text,
+  Checkbox,
+  CheckboxGroup,
+  ButtonGroup,
+  Button,
+  Tag,
+} from "@chakra-ui/react";
 import { GetStaticProps, NextPage } from "next";
-import { join } from "path";
 import Container from "../../components/layout/container";
+import NextLink from "next/link";
 
-import { load } from "js-yaml";
-import { ContentMetadata, parseMetadata } from "../../utils/mdx";
+import {
+  ContentMetadata,
+  getPoliciesDirs,
+  getPoliciesFromDir,
+  getPolicy,
+} from "../../utils/server";
+import { useMemo, useState } from "react";
+import { sections, Sections } from "../../utils/metadata";
 
-type PolicyList = Array<ContentMetadata & { name: string }>;
+type PolicyList = {
+  metadata: ContentMetadata;
+  name: string;
+};
 
 type StaticData = {
-  items: PolicyList;
+  items: [Sections, PolicyList[]][];
 };
 
 export const getStaticProps: GetStaticProps<StaticData> = async () => {
-  const contentDir = join(process.cwd(), "content");
-  const files = await readdir(contentDir);
-  const items = (
-    await Promise.all(
-      files.map(async (file) => {
-        const filename = join(contentDir, file);
-        const content = await readFile(filename, {
-          encoding: "utf-8",
-        });
-        const match =
-          /^---(?:\r?\n|\r)(?:([\s\S]*?)(?:\r?\n|\r))?---(?:\r?\n|\r|$)/.exec(
-            content
-          );
-        if (!match) return undefined;
-        try {
-          return parseMetadata(load(match[1], { filename }), file);
-        } catch (err) {
-          return undefined;
-        }
-      })
-    )
-  ).filter(Boolean) as PolicyList;
+  const dirs = await getPoliciesDirs();
+  const items = (await Promise.all(
+    dirs.map(async (folder) => {
+      const files = await getPoliciesFromDir(folder);
+      const policies = (
+        await Promise.all(
+          files.map(async (name) => {
+            try {
+              const { metadata } = await getPolicy(folder, name);
+              return {
+                metadata,
+                name,
+              };
+            } catch {
+              return undefined;
+            }
+          })
+        )
+      ).filter(Boolean);
+      return [folder, policies];
+    })
+  )) as StaticData["items"];
+
   return {
     props: {
       items,
@@ -44,23 +67,68 @@ export const getStaticProps: GetStaticProps<StaticData> = async () => {
 };
 
 const PoliciesPage: NextPage<StaticData> = ({ items }) => {
+  const [selected, setSelected] = useState<Sections | "all">("all");
+
+  const targetDataset =
+    selected === "all"
+      ? items
+      : ([items.find((v) => v[0] === selected)] as StaticData["items"]);
+
   return (
     <Container>
-      <Heading as="h1">นโยบาย</Heading>
-      <LinkBox as="article" maxW="sm" p="5" borderWidth="1px" rounded="md">
-        <Box as="time" dateTime="2021-01-15 15:30:00 +0000 UTC">
-          13 days ago
-        </Box>
-        <Heading size="md" my="2">
-          <LinkOverlay href="#">
-            New Year, New Beginnings: Smashing Workshops & Audits
-          </LinkOverlay>
-        </Heading>
-        <Text>
-          Catch up on what’s been cookin’ at Smashing and explore some of the
-          most popular community resources.
+      <Heading as="h1" size="2xl">
+        นโยบาย
+      </Heading>
+      <Stack>
+        <Text fontSize={"lg"} fontWeight={"bold"}>
+          เลือกดูตามฝ่ายงาน
         </Text>
-      </LinkBox>
+        <ButtonGroup spacing={"0"} colorScheme="orange">
+          <Box gap={"2"} display={"flex"} flexWrap="wrap">
+            {[["all", "นโยบายทั้งหมด"], ...Object.entries(sections)].map(
+              ([name, section]) => (
+                <Button
+                  key={name}
+                  variant={selected === name ? "solid" : "outline"}
+                  onClick={() => setSelected(name as Sections)}
+                >
+                  {section}
+                </Button>
+              )
+            )}
+          </Box>
+        </ButtonGroup>
+      </Stack>
+      <Box display="flex" gap="6" flexDirection={"row"} flexWrap="wrap">
+        {targetDataset.map(([name, items], index) => {
+          return items.map((item) => (
+            <LinkBox
+              my="0"
+              as="article"
+              w="full"
+              maxW="sm"
+              key={`${item.name}_${index}`}
+              p="5"
+              borderWidth="1px"
+              rounded="md"
+            >
+              <Heading size="md" my="2">
+                <NextLink href={`/policy/${name}/${item.name}`} passHref>
+                  <LinkOverlay>{item.metadata.title}</LinkOverlay>
+                </NextLink>
+              </Heading>
+              <Tag
+                size="md"
+                variant="outline"
+                colorScheme="orange"
+                fontWeight={"normal"}
+              >
+                {sections[name]}
+              </Tag>
+            </LinkBox>
+          ));
+        })}
+      </Box>
     </Container>
   );
 };

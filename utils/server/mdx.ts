@@ -1,6 +1,5 @@
 import { join } from "path";
 
-export const contentDir = join(process.cwd(), "content");
 export type ContentMetadata = {
   title: string;
   tags: string[];

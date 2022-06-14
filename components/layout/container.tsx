@@ -1,5 +1,11 @@
 import React from "react";
-import { Box, ChakraComponent, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  ChakraComponent,
+  Stack,
+  Heading,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import Navbar from "./navbar";
 
 export default function Container({
@@ -21,8 +27,9 @@ export default function Container({
         h="full"
         as="main"
         marginTop={"14"}
-        paddingInline={{ base: "4", md: "6" }}
-        paddingBlock={{ base: "6", md: "8" }}
+        paddingInline={{ base: "6", lg: "10" }}
+        paddingBlock={{ base: "8", lg: "12" }}
+        backgroundColor={useColorModeValue("white", "gray.800")}
         {...props}
         {...(width !== "full"
           ? {
@@ -45,6 +52,17 @@ export default function Container({
           children
         )}
       </Wrapper>
+      <Box
+        as="footer"
+        backgroundColor="orange.300"
+        width="full"
+        px={{ base: "8", lg: "16" }}
+        py="8"
+      >
+        <Heading as="span" size="sm">
+          จัดทำโดย
+        </Heading>
+      </Box>
     </Box>
   );
 }
