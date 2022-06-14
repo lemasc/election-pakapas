@@ -3,7 +3,7 @@ const sections = {
   main: "นโยบายหลัก",
   affairs: "ฝ่ายกิจการนักเรียน",
   academic: "ฝ่ายวิชาการ",
-  sports: "ฝ่ายกีฬา",
+  sports: "ฝ่ายกีฬาและนันทนาการ",
   environment: "ฝ่ายสิ่งแวดล้อม",
   information: "ฝ่ายสารสนเทศ",
 };
