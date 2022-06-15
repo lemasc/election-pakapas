@@ -1,11 +1,9 @@
-import { Heading } from "@chakra-ui/react";
 import Container from "../components/layout/container";
 import Title from "../components/Title";
-
-export default function Survey() {
+export default function IndexPage() {
   return (
     <Container>
-      <Title>แบบสอบถาม</Title>
+      <Title>ประวัติ</Title>
     </Container>
   );
 }

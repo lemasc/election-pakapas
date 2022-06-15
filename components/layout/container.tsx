@@ -7,6 +7,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import Navbar from "./navbar";
+import Footer from "./footer";
 
 export default function Container({
   children,
@@ -52,17 +53,7 @@ export default function Container({
           children
         )}
       </Wrapper>
-      <Box
-        as="footer"
-        backgroundColor="orange.300"
-        width="full"
-        px={{ base: "8", lg: "16" }}
-        py="8"
-      >
-        <Heading as="span" size="sm">
-          จัดทำโดย
-        </Heading>
-      </Box>
+      <Footer />
     </Box>
   );
 }

@@ -1,9 +1,9 @@
-import { Heading } from "@chakra-ui/react";
 import Container from "../components/layout/container";
+import Title from "../components/Title";
 export default function IndexPage() {
   return (
     <Container>
-      <Heading>หน้าหลัก</Heading>
+      <Title>หน้าหลัก</Title>
     </Container>
   );
 }

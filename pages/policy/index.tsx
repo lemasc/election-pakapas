@@ -1,30 +1,29 @@
 import {
   Box,
-  FormControl,
-  FormLabel,
+  Button,
+  ButtonGroup,
   Heading,
   LinkBox,
   LinkOverlay,
+  Select,
   Stack,
-  Text,
-  Checkbox,
-  CheckboxGroup,
-  ButtonGroup,
-  Button,
   Tag,
+  Text,
 } from "@chakra-ui/react";
-import { GetStaticProps, NextPage } from "next";
-import Container from "../../components/layout/container";
-import NextLink from "next/link";
-
 import {
   ContentMetadata,
   getPoliciesDirs,
   getPoliciesFromDir,
   getPolicy,
 } from "../../utils/server";
-import { useMemo, useState } from "react";
-import { sections, Sections } from "../../utils/metadata";
+import { GetStaticProps, NextPage } from "next";
+import { Sections, sections } from "../../utils/metadata";
+import { useEffect, useMemo, useState } from "react";
+import Container from "../../components/layout/container";
+import NextLink from "next/link";
+
+import Title from "../../components/Title";
+import { useRouter } from "next/router";
 
 type PolicyList = {
   metadata: ContentMetadata;
@@ -66,8 +65,43 @@ export const getStaticProps: GetStaticProps<StaticData> = async () => {
   };
 };
 
+const isSectionValid = (section: string | string[]) => {
+  return typeof section === "string" && Object.keys(sections).includes(section);
+};
+
+const sectionsToSelect = [
+  ["all", "นโยบายทั้งหมด"],
+  ...Object.entries(sections),
+] as [Sections | "all", string][];
 const PoliciesPage: NextPage<StaticData> = ({ items }) => {
-  const [selected, setSelected] = useState<Sections | "all">("all");
+  const { query, replace, push } = useRouter();
+  const selected = useMemo<Sections | "all">(() => {
+    if (query.section && isSectionValid(query.section)) {
+      return query.section as Sections;
+    }
+    return "all";
+  }, [query]);
+
+  const setSelected = (section: Sections | "all") => {
+    push(
+      {
+        href: "/policy",
+        query: section === "all" ? undefined : { section },
+      },
+      undefined,
+      {
+        shallow: true,
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (query.section && !isSectionValid(query.section)) {
+      replace("/policy", undefined, {
+        shallow: true,
+      });
+    }
+  }, [query, replace]);
 
   const targetDataset =
     selected === "all"
@@ -76,28 +110,39 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
 
   return (
     <Container>
-      <Heading as="h1" size="2xl">
-        นโยบาย
-      </Heading>
+      <Title>นโยบาย</Title>
       <Stack>
         <Text fontSize={"lg"} fontWeight={"bold"}>
           เลือกดูตามฝ่ายงาน
         </Text>
-        <ButtonGroup spacing={"0"} colorScheme="orange">
+        <ButtonGroup
+          display={{ base: "none", sm: "block" }}
+          spacing={"0"}
+          colorScheme="orange"
+        >
           <Box gap={"2"} display={"flex"} flexWrap="wrap">
-            {[["all", "นโยบายทั้งหมด"], ...Object.entries(sections)].map(
-              ([name, section]) => (
-                <Button
-                  key={name}
-                  variant={selected === name ? "solid" : "outline"}
-                  onClick={() => setSelected(name as Sections)}
-                >
-                  {section}
-                </Button>
-              )
-            )}
+            {sectionsToSelect.map(([name, section]) => (
+              <Button
+                key={name}
+                variant={selected === name ? "solid" : "outline"}
+                onClick={() => setSelected(name as Sections)}
+              >
+                {section}
+              </Button>
+            ))}
           </Box>
         </ButtonGroup>
+        <Select
+          onChange={(e) => setSelected(e.target.value as Sections)}
+          display={{ base: "block", sm: "none" }}
+          focusBorderColor="orange.500"
+        >
+          {sectionsToSelect.map(([name, section]) => (
+            <option key={name} value={name}>
+              {section}
+            </option>
+          ))}
+        </Select>
       </Stack>
       <Box display="flex" gap="6" flexDirection={"row"} flexWrap="wrap">
         {targetDataset.map(([name, items], index) => {
@@ -106,18 +151,21 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
               my="0"
               as="article"
               w="full"
-              maxW="sm"
+              display="flex"
+              alignItems={{ base: "flex-start", sm: "center" }}
+              flexDirection={{ base: "column", sm: "row" }}
               key={`${item.name}_${index}`}
               p="5"
               borderWidth="1px"
               rounded="md"
             >
-              <Heading size="md" my="2">
+              <Heading size="md" my="2" flexGrow="1" mr="6">
                 <NextLink href={`/policy/${name}/${item.name}`} passHref>
                   <LinkOverlay>{item.metadata.title}</LinkOverlay>
                 </NextLink>
               </Heading>
               <Tag
+                flexShrink={"0"}
                 size="md"
                 variant="outline"
                 colorScheme="orange"

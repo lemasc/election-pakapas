@@ -1,16 +1,18 @@
-import Container from "../../../components/layout/container";
-import { Box, Heading, Icon, Stack } from "@chakra-ui/react";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { basename } from "path";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { Box, Stack } from "@chakra-ui/react";
 import {
   ContentMetadata,
   getPoliciesFromDir,
   getPolicy,
 } from "../../../utils/server";
-import { Sections } from "../../../utils/metadata";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
+import Container from "../../../components/layout/container";
 import Link from "../../../components/Link";
-import { ArrowBackIcon, ChevronLeftIcon } from "@chakra-ui/icons";
+import { Sections } from "../../../utils/metadata";
+import Title from "../../../components/Title";
+
+import { basename } from "path";
 
 type StaticParam = {
   section: Sections;
@@ -60,7 +62,8 @@ const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
           <ChevronLeftIcon w="5" h="5" mt="-0.5" />
           กลับไปยังหน้ารวมนโยบาย
         </Link>
-        <Heading>{metadata.title}</Heading>
+
+        <Title>{metadata.title}</Title>
       </Stack>
       <Box className="content">
         <MDXRemote {...content} />

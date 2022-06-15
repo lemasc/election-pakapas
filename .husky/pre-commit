@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+git submodule update --remote
+git add -A content/src
+yarn run build-content

@@ -13,6 +13,7 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { ComponentProps } from "react";
 import NextLink from "next/link";
+import Image from "next/image";
 
 export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
   const { isOpen, onToggle } = useDisclosure();
@@ -33,12 +34,10 @@ export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
         bg={useColorModeValue("white", "gray.800")}
         backgroundColor="orange.400"
         color={useColorModeValue("gray.600", "white")}
-        minH={"60px"}
-        py={{ base: 2 }}
         px={{ base: 4 }}
         align={"center"}
       >
-        <Flex flex={{ base: 1 }} justify={"start"}>
+        <Flex flex={{ base: 1 }} justify={"start"} align="center">
           <NextLink href="/" passHref>
             <Text
               as={"a"}
@@ -49,7 +48,12 @@ export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
               fontSize={"lg"}
               color={useColorModeValue("white", "gray.800")}
             >
-              Logo
+              <Image
+                alt="ภคภ1ส"
+                src="/images/logo_light.png"
+                width={60}
+                height={60}
+              />
             </Text>
           </NextLink>
 
