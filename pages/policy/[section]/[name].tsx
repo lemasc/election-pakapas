@@ -4,11 +4,9 @@ import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { basename } from "path";
 import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import {
-  contentDir,
   ContentMetadata,
   getPoliciesFromDir,
   getPolicy,
-  parseMetadata,
 } from "../../../utils/server";
 import { Sections } from "../../../utils/metadata";
 import Link from "../../../components/Link";
@@ -51,7 +49,7 @@ export const getStaticProps: GetStaticProps<StaticData, StaticParam> = async ({
 const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
   return (
     <Container>
-      <Stack gap="1">
+      <Stack gap="1.5">
         <Link
           href="/policy"
           fontSize="sm"
@@ -64,7 +62,7 @@ const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
         </Link>
         <Heading>{metadata.title}</Heading>
       </Stack>
-      <Box>
+      <Box className="content">
         <MDXRemote {...content} />
       </Box>
     </Container>

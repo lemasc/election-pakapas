@@ -6,9 +6,7 @@ import { sections, Sections } from "../metadata";
 import { ContentMetadata, parseMetadata } from "./mdx";
 import { load } from "js-yaml";
 import { existsSync } from "fs";
-import { contentDir } from "../build-content";
-
-export { contentDir };
+import { contentDir } from "./shared";
 
 export const getPoliciesDirs = async () => {
   // We can't simply use `readdir`, because it sort alphabetically.
