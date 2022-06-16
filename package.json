@@ -8,7 +8,7 @@
     "build": "yarn run build-content && next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-content": "git submodule update --remote",
+    "sync-content": "git submodule update --remote && yarn run build-content",
     "build-content": "ts-node utils/build-content.ts"
   },
   "dependencies": {
@@ -18,8 +18,11 @@
     "@emotion/styled": "^11",
     "@fortawesome/fontawesome-svg-core": "^6.1.1",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
+    "@fortawesome/free-regular-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.1.18",
     "eruda": "^2.4.1",
+    "firebase": "^9.8.3",
     "framer-motion": "^6",
     "js-yaml": "^4.1.0",
     "next": "12.1.6",

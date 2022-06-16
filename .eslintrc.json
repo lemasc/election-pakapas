@@ -1,7 +1,6 @@
 {
   "extends": ["next/core-web-vitals", "prettier"],
   "rules": {
-    "react/no-jsx-in-scope": "off",
-    "sort-imports": "warn"
+    "react/no-jsx-in-scope": "off"
   }
 }

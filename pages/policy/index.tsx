@@ -10,69 +10,24 @@ import {
   Tag,
   Text,
 } from "@chakra-ui/react";
-import {
-  ContentMetadata,
-  getPoliciesDirs,
-  getPoliciesFromDir,
-  getPolicy,
-} from "../../utils/server";
+
 import { GetStaticProps, NextPage } from "next";
-import { Sections, sections } from "../../utils/metadata";
+import { Sections, isSectionValid, sections } from "../../utils/metadata";
 import { useEffect, useMemo, useState } from "react";
 import Container from "../../components/layout/container";
 import NextLink from "next/link";
+import { StaticData } from "../../utils/staticProps/list";
 
 import Title from "../../components/Title";
 import { useRouter } from "next/router";
 
-type PolicyList = {
-  metadata: ContentMetadata;
-  name: string;
-};
-
-type StaticData = {
-  items: [Sections, PolicyList[]][];
-};
-
-export const getStaticProps: GetStaticProps<StaticData> = async () => {
-  const dirs = await getPoliciesDirs();
-  const items = (await Promise.all(
-    dirs.map(async (folder) => {
-      const files = await getPoliciesFromDir(folder);
-      const policies = (
-        await Promise.all(
-          files.map(async (name) => {
-            try {
-              const { metadata } = await getPolicy(folder, name);
-              return {
-                metadata,
-                name,
-              };
-            } catch {
-              return undefined;
-            }
-          })
-        )
-      ).filter(Boolean);
-      return [folder, policies];
-    })
-  )) as StaticData["items"];
-
-  return {
-    props: {
-      items,
-    },
-  };
-};
-
-const isSectionValid = (section: string | string[]) => {
-  return typeof section === "string" && Object.keys(sections).includes(section);
-};
+export { getStaticProps } from "../../utils/staticProps/list";
 
 const sectionsToSelect = [
   ["all", "นโยบายทั้งหมด"],
   ...Object.entries(sections),
 ] as [Sections | "all", string][];
+
 const PoliciesPage: NextPage<StaticData> = ({ items }) => {
   const { query, replace, push } = useRouter();
   const selected = useMemo<Sections | "all">(() => {
@@ -103,10 +58,12 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
     }
   }, [query, replace]);
 
-  const targetDataset =
-    selected === "all"
-      ? items
-      : ([items.find((v) => v[0] === selected)] as StaticData["items"]);
+  const itemsObj = useMemo(() => Object.fromEntries(items), [items]);
+
+  const targetDataset = useMemo(
+    () => (selected === "all" ? items : [[selected, itemsObj[selected] ?? []]]),
+    [items, selected, itemsObj]
+  ) as StaticData["items"];
 
   return (
     <Container>

@@ -1,6 +1,5 @@
 import NextLink from "next/link";
 import { Link as UILink } from "@chakra-ui/react";
-import React from "react";
 
 export default function Link({
   href,

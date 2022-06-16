@@ -1,13 +1,13 @@
-import React from "react";
 import {
   Box,
   ChakraComponent,
-  Stack,
   Heading,
+  Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Navbar from "./navbar";
 import Footer from "./footer";
+import Navbar from "./navbar";
+import React from "react";
 
 export default function Container({
   children,
@@ -28,8 +28,8 @@ export default function Container({
         h="full"
         as="main"
         marginTop={"14"}
-        paddingInline={{ base: "6", lg: "10" }}
-        paddingBlock={{ base: "8", lg: "12" }}
+        paddingInline={{ base: "6", md: "10" }}
+        paddingBlock={{ base: "8", md: "12" }}
         backgroundColor={useColorModeValue("white", "gray.800")}
         {...props}
         {...(width !== "full"
@@ -44,7 +44,7 @@ export default function Container({
           <Stack
             width="full"
             maxWidth="4xl"
-            mx={{ base: "8", lg: "16" }}
+            mx={{ base: "8", md: "16" }}
             gap={"4"}
           >
             {children}

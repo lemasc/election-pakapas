@@ -63,7 +63,7 @@ const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
           กลับไปยังหน้ารวมนโยบาย
         </Link>
 
-        <Title>{metadata.title}</Title>
+        <Title subHeading>{metadata.title}</Title>
       </Stack>
       <Box className="content">
         <MDXRemote {...content} />

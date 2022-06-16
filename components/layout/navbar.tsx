@@ -1,19 +1,19 @@
 import {
   Box,
-  Flex,
-  Text,
-  IconButton,
-  Stack,
+  ChakraComponent,
   Collapse,
+  Flex,
+  IconButton,
   Link,
+  Stack,
+  Text,
   useColorModeValue,
   useDisclosure,
-  ChakraComponent,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { ComponentProps } from "react";
-import NextLink from "next/link";
 import Image from "next/image";
+import NextLink from "next/link";
 
 export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
   const { isOpen, onToggle } = useDisclosure();
@@ -130,23 +130,24 @@ const MobileNav = () => {
 const MobileNavItem = ({ label, href }: NavItem) => {
   return (
     <Stack spacing={4}>
-      <Flex
-        py={2}
-        as={Link}
-        href={href ?? "#"}
-        justify={"space-between"}
-        align={"center"}
-        _hover={{
-          textDecoration: "none",
-        }}
-      >
-        <Text
-          fontWeight={600}
-          color={useColorModeValue("gray.600", "gray.200")}
+      <NextLink href={href ?? "#"} passHref>
+        <Flex
+          py={2}
+          as={Link}
+          justify={"space-between"}
+          align={"center"}
+          _hover={{
+            textDecoration: "none",
+          }}
         >
-          {label}
-        </Text>
-      </Flex>
+          <Text
+            fontWeight={600}
+            color={useColorModeValue("gray.600", "gray.200")}
+          >
+            {label}
+          </Text>
+        </Flex>
+      </NextLink>
     </Stack>
   );
 };

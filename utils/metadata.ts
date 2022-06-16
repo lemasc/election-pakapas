@@ -8,4 +8,8 @@ const sections = {
   information: "ฝ่ายสารสนเทศ",
 };
 
-export { sections };
+const isSectionValid = (section: string | string[]): section is Sections => {
+  return typeof section === "string" && Object.keys(sections).includes(section);
+};
+
+export { sections, isSectionValid };
