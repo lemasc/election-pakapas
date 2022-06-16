@@ -4,6 +4,7 @@ import {
   Heading,
   SimpleGrid,
   Text,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 
 import { Sections, sections } from "../../utils/metadata";
@@ -15,6 +16,8 @@ import Title from "../../components/Title";
 
 function SectionButton({ section, ...rest }: { section: Sections }) {
   const title = sections[section];
+  const imageSize = useBreakpointValue({ base: 70, md: 100 });
+  const cardHeight = useBreakpointValue({ base: 150, md: 180 });
   return (
     <Link href={`/survey/${section}`} passHref>
       <Button
@@ -27,7 +30,7 @@ function SectionButton({ section, ...rest }: { section: Sections }) {
           color: "white",
         }}
         width={"full"}
-        height={180}
+        height={cardHeight}
         gap="4"
         flexDirection="column"
         {...rest}
@@ -36,8 +39,8 @@ function SectionButton({ section, ...rest }: { section: Sections }) {
           title={title}
           alt={title}
           src={`/images/${section === "main" ? "logo_circle" : section}.png`}
-          width={100}
-          height={100}
+          width={imageSize}
+          height={imageSize}
         />
         <Heading wordBreak={"break-all"} noOfLines={2} fontSize={"xl"}>
           {title}
@@ -46,6 +49,7 @@ function SectionButton({ section, ...rest }: { section: Sections }) {
     </Link>
   );
 }
+
 export default function Survey() {
   return (
     <Container>

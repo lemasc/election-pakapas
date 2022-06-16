@@ -133,10 +133,17 @@ export default function SectionSurvey({ items, section }: StaticData) {
             borderColor="gray.300"
             borderWidth="1px"
             key={v.name}
-            flexDirection={"row"}
+            flexDirection={{ base: "column", sm: "row" }}
             alignItems={"center"}
           >
-            <Stack spacing={"0.5"} flexDirection={"column"} flexGrow={1}>
+            <Stack
+              spacing={"0.5"}
+              flexDirection={"column"}
+              flexGrow={1}
+              textAlign={{ base: "center", sm: "unset" }}
+              alignItems={{ base: "center", sm: "flex-start" }}
+              mr="4"
+            >
               <Text fontSize="lg" mt="1" as="b" fontWeight="medium">
                 {v.title}
               </Text>
