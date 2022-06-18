@@ -28,3 +28,14 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.form-container {
+  @apply gap-2 grid items-center justify-center;
+  grid-template-columns: max-content 1fr;
+}
+.form-container > *:nth-child(odd) {
+  @apply md:mr-8;
+}
+.form-container > *:nth-child(even) {
+  @apply w-full;
+}

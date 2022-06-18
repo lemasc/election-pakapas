@@ -11,28 +11,33 @@ import React from "react";
 
 export default function Container({
   children,
+  transparent,
   ...props
-}: React.ComponentProps<ChakraComponent<"main">>) {
+}: React.ComponentProps<ChakraComponent<"main">> & {
+  transparent?: boolean;
+}) {
   const { width } = props;
 
   const Wrapper = React.useMemo(
     () => (width === "full" ? Stack : Box),
     [width]
   );
+
+  const fullWidth = transparent || width === "full";
   return (
     <Box minH="100vh" h="full" flexDirection={"column"} display="flex">
-      <Navbar minHeight="14" />
+      <Navbar transparent={transparent} minHeight={"14"} />
       {/* @ts-expect-error Props */}
       <Wrapper
         flex="1"
         h="full"
         as="main"
-        marginTop={"14"}
-        paddingInline={{ base: "6", md: "10" }}
-        paddingBlock={{ base: "8", md: "12" }}
+        marginTop={transparent ? undefined : "14"}
+        paddingInline={!fullWidth ? { base: "6", md: "10" } : undefined}
+        paddingBlock={fullWidth ? undefined : { base: "8", md: "12" }}
         backgroundColor={useColorModeValue("white", "gray.800")}
         {...props}
-        {...(width !== "full"
+        {...(!fullWidth
           ? {
               display: "flex",
               flexDirection: "column",
@@ -40,7 +45,7 @@ export default function Container({
             }
           : {})}
       >
-        {width !== "full" ? (
+        {!fullWidth ? (
           <Stack
             width="full"
             maxWidth="4xl"

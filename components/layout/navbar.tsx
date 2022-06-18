@@ -11,12 +11,29 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
-import { ComponentProps } from "react";
+import { ComponentProps, useEffect, useState } from "react";
 import Image from "next/image";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 
-export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
+export default function Navbar({
+  transparent,
+  ...props
+}: ComponentProps<ChakraComponent<"nav">> & {
+  transparent?: boolean;
+}) {
   const { isOpen, onToggle } = useDisclosure();
+
+  const [top, setTop] = useState(true);
+  useEffect(() => {
+    const scrollHandler = () => {
+      window.pageYOffset > 100 ? setTop(false) : setTop(true);
+    };
+    window.addEventListener("scroll", scrollHandler);
+    return () => window.removeEventListener("scroll", scrollHandler);
+  }, [top]);
+
+  const { pathname } = useRouter();
 
   return (
     // @ts-expect-error Props HTMLElement
@@ -25,14 +42,15 @@ export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
       position={"fixed"}
       top={0}
       insetX={0}
-      shadow="md"
+      shadow={transparent && top ? undefined : "md"}
       width="full"
       zIndex={"sticky"}
       {...props}
     >
       <Flex
         bg={useColorModeValue("white", "gray.800")}
-        backgroundColor="orange.400"
+        className="transition duration-300 ease-in-out"
+        backgroundColor={transparent && top ? "transparent" : "orange.400"}
         color={useColorModeValue("gray.600", "white")}
         px={{ base: 4 }}
         align={"center"}
@@ -50,7 +68,9 @@ export default function Navbar(props: ComponentProps<ChakraComponent<"nav">>) {
             >
               <Image
                 alt="ภคภ1ส"
-                src="/images/logo_light.png"
+                src={`/images/logo${
+                  top && pathname === "/" ? "" : "_light"
+                }.png`}
                 width={60}
                 height={60}
               />
@@ -98,6 +118,7 @@ const DesktopNav = () => {
           <NextLink href={navItem.href ?? "#"} passHref>
             <Link
               p={2}
+              fontWeight="medium"
               color={linkColor}
               _hover={{
                 textDecoration: "none",
@@ -160,7 +181,7 @@ interface NavItem {
 
 const NAV_ITEMS: Array<NavItem> = [
   {
-    label: "ประวัติ",
+    label: "เกี่ยวกับ",
     href: "/about",
   },
   {

@@ -1,8 +1,10 @@
 import {
+  Box,
   Button,
   ButtonProps,
   Heading,
   SimpleGrid,
+  Stack,
   Text,
   useBreakpointValue,
 } from "@chakra-ui/react";
@@ -13,6 +15,7 @@ import Image from "next/image";
 
 import Link from "next/link";
 import Title from "../../components/Title";
+import { AuthStatus } from "../../components/survey";
 
 function SectionButton({ section, ...rest }: { section: Sections }) {
   const title = sections[section];
@@ -53,7 +56,11 @@ function SectionButton({ section, ...rest }: { section: Sections }) {
 export default function Survey() {
   return (
     <Container>
-      <Title>แบบสอบถาม</Title>
+      <Stack direction={{ base: "column-reverse", md: "row" }}>
+        <Title flexGrow={1}>แบบสอบถาม</Title>
+        <AuthStatus />
+      </Stack>
+
       <Text maxWidth="650px">
         ทุกความคิดเห็นในแบบสอบถามนี้ เราจะนำไปประเมินนโยบายทั้งหมด
         กรุณาสละเวลาเพียงครู่เดียว

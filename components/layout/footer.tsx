@@ -1,17 +1,24 @@
-import { Box, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Link, Stack, Text } from "@chakra-ui/react";
 import IconButton, { Props } from "../IconButton";
 import { faFacebookF, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
 
-function ContactButton(props: Props) {
+function ContactButton({
+  href,
+  ...props
+}: Props & {
+  href: string;
+}) {
   return (
-    <IconButton
-      variant={"outline"}
-      p="2"
-      rounded="full"
-      _hover={{ color: "black", background: "white" }}
-      {...props}
-    />
+    <Link href={href} isExternal>
+      <IconButton
+        variant={"outline"}
+        p="2"
+        rounded="full"
+        _hover={{ color: "black", background: "white" }}
+        {...props}
+      />
+    </Link>
   );
 }
 export default function Footer() {
@@ -42,8 +49,16 @@ export default function Footer() {
           ผู้สมัครประธานนักเรียนหมายเลข 1 ประจำปีการศึกษา 2565
         </Text>
         <Stack my="2" justifyContent={"flex-start"} direction="row">
-          <ContactButton label="ติดต่อทาง Facebook" icon={faFacebookF} />
-          <ContactButton label="ติดต่อทาง Instagram" icon={faInstagram} />
+          <ContactButton
+            href="https://www.facebook.com/profile.php?id=100009240238831"
+            label="ติดต่อทาง Facebook"
+            icon={faFacebookF}
+          />
+          <ContactButton
+            href="https://www.instagram.com/pakapas.the1"
+            label="ติดต่อทาง Instagram"
+            icon={faInstagram}
+          />
         </Stack>
       </Box>
     </Box>
