@@ -14,7 +14,7 @@ export function LogoutModal({
   isOpen,
   onClose,
 }: Pick<AlertDialogProps, "isOpen" | "onClose">) {
-  const cancelRef = React.useRef();
+  const cancelRef = React.useRef(null);
   return (
     <AlertDialog
       isOpen={isOpen}
