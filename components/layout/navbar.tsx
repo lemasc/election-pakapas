@@ -107,7 +107,9 @@ export default function Navbar({
                     src={["/images/logo.png", "/images/logo_light.png"]}
                     width={60}
                     height={60}
-                    index={top && !isMobile ? 0 : 1}
+                    index={
+                      top && (!isMobile || (isOpen && transparent)) ? 0 : 1
+                    }
                   />
                 </>
               ) : (

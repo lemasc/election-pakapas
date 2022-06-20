@@ -57,7 +57,7 @@ export default function IndexPage() {
               <b>ชื่อ :</b>
               <span>นายภคภาส อัศวศิริวิลาศ (โอ๊ต)</span>
               <b>ชั้น :</b>
-              <span>ม.4/2</span>
+              <span>ม.5/2</span>
               <b>แผนการเรียน :</b>ภาษาอังกฤษ-คณิตศาสตร
               <b>อายุ :</b>
               <span>16 ปี</span>

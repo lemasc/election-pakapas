@@ -55,7 +55,10 @@ export default function IndexPage() {
           </SectionBox>
           <SectionBox bg="orange.200">
             <Heading size={"lg"}>นโยบายของภคภ1ส</Heading>
-            <Text>นโยบายของเรามุ่งเน้นการพัฒนาโรงเรียนเป็นสำคัญ เพื่อให้</Text>
+            <Text maxW="md">
+              นโยบายของเรามุ่งเน้นการมีส่วนร่วมของนักเรียนเป็นสำคัญ
+              มาช่วยกันพัฒนาโรงเรียนของเรากันเถอะ !
+            </Text>
             <Box>
               <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
                 อ่านนโยบายของภคภ1ส
@@ -63,21 +66,32 @@ export default function IndexPage() {
             </Box>
           </SectionBox>
         </Box>
-        <Box as="section" className="grid md:grid-cols-2">
-          <Stack
-            spacing="4"
-            py="10"
-            mx={"4"}
-            px={{ base: "8", md: "10", lg: "16" }}
-          >
-            <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
-            <Text>มาร่วมกำหนดทิศทางของโรงเรียนไปด้วยกัน</Text>
-            <Box>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                ทำแบบสอบถามของภคภ1ส
-              </Button>
-            </Box>
-          </Stack>
+        <Box
+          as="section"
+          display={"flex"}
+          flexDirection={{ base: "row" }}
+          justifyContent="center"
+          py="10"
+          px={{ base: "8", md: "10", lg: "16" }}
+        >
+          <Box w="full" maxW="4xl" mx="4" className="grid md:grid-cols-2 gap-8">
+            <Stack spacing="4">
+              <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
+              <Text>
+                เสียงของทุกคนมีค่า มาแสดงความคิดเห็นต่อนโยบายของภคภ1ส
+                เพื่อร่วมกำหนดทิศทางของโรงเรียนไปด้วยกัน
+              </Text>
+              <Box>
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
+                  ทำแบบสอบถามของภคภ1ส
+                </Button>
+              </Box>
+            </Stack>
+            <Stack
+              spacing="4"
+              className="border border-black w-50 h-50"
+            ></Stack>
+          </Box>
         </Box>
       </Container>
       <Title heading={false}>หน้าหลัก</Title>
