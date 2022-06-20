@@ -30,7 +30,7 @@
 }
 
 .form-container {
-  @apply gap-2 grid items-center justify-center;
+  @apply gap-3 lg:gap-2 grid items-center justify-center;
   grid-template-columns: max-content 1fr;
 }
 .form-container > *:nth-child(odd) {

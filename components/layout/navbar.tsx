@@ -7,14 +7,43 @@ import {
   Link,
   Stack,
   Text,
+  useBreakpointValue,
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { ComponentProps, useEffect, useState } from "react";
-import Image from "next/image";
+import Image, { ImageProps } from "next/image";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
+import DynamicImage from "../DynamicImage";
+
+function Logo({
+  hidden,
+  light = true,
+  ...props
+}: {
+  light?: boolean;
+  hidden?: boolean;
+}) {
+  if (typeof hidden !== "undefined") {
+    // Applying display styles directly doesn't work, because NextJS add inline styles over it.
+    return (
+      <Box display={hidden ? "none" : undefined}>
+        <Logo light={light} />
+      </Box>
+    );
+  }
+  return (
+    <Image
+      alt="ภคภ1ส"
+      src={`/images/logo${light ? "_light" : ""}.png`}
+      width={60}
+      height={60}
+      {...props}
+    />
+  );
+}
 
 export default function Navbar({
   transparent,
@@ -34,6 +63,7 @@ export default function Navbar({
   }, [top]);
 
   const { pathname } = useRouter();
+  const isMobile = useBreakpointValue({ base: true, sm: false });
 
   return (
     // @ts-expect-error Props HTMLElement
@@ -48,9 +78,12 @@ export default function Navbar({
       {...props}
     >
       <Flex
-        bg={useColorModeValue("white", "gray.800")}
-        className="transition duration-300 ease-in-out"
-        backgroundColor={transparent && top ? "transparent" : "orange.400"}
+        className={`transition duration-300 ease-in-out ${
+          transparent && top
+            ? `${isOpen ? "bg-white bg-opacity-80" : "bg-transparent"}`
+            : ""
+        }`}
+        backgroundColor={transparent && top ? undefined : "orange.400"}
         color={useColorModeValue("gray.600", "white")}
         px={{ base: 4 }}
         align={"center"}
@@ -66,14 +99,20 @@ export default function Navbar({
               fontSize={"lg"}
               color={useColorModeValue("white", "gray.800")}
             >
-              <Image
-                alt="ภคภ1ส"
-                src={`/images/logo${
-                  top && pathname === "/" ? "" : "_light"
-                }.png`}
-                width={60}
-                height={60}
-              />
+              {pathname === "/" ? (
+                <>
+                  {/* Prefetch images ! */}
+                  <DynamicImage
+                    alt="ภคภ1ส"
+                    src={["/images/logo.png", "/images/logo_light.png"]}
+                    width={60}
+                    height={60}
+                    index={top && !isMobile ? 0 : 1}
+                  />
+                </>
+              ) : (
+                <Logo />
+              )}
             </Text>
           </NextLink>
 
@@ -88,8 +127,11 @@ export default function Navbar({
           justify="flex-end"
         >
           <IconButton
-            color="white"
-            _focus={{ color: "gray.600" }}
+            color={isOpen && transparent && top ? "gray.600" : "white"}
+            _hover={
+              transparent && top && !isOpen ? { color: "gray.100" } : undefined
+            }
+            _focus={{}}
             onClick={onToggle}
             icon={
               isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />
@@ -101,7 +143,7 @@ export default function Navbar({
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
-        <MobileNav />
+        <MobileNav transparent={transparent && top} />
       </Collapse>
     </Box>
   );
@@ -134,10 +176,12 @@ const DesktopNav = () => {
   );
 };
 
-const MobileNav = () => {
+const MobileNav = ({ transparent }: { transparent?: boolean }) => {
   return (
     <Stack
-      bg={useColorModeValue("white", "gray.800")}
+      className={`transition duration-300 ease-in-out ${
+        transparent ? "bg-opacity-90 " : ""
+      } bg-white`}
       p={4}
       display={{ md: "none" }}
     >
