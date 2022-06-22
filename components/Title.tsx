@@ -29,9 +29,13 @@ export default function Title({
         />
         <meta
           property="og:image"
-          content="https://pakapas-staging.netlify.app/_next/image?url=%2Fbackground%2Fhome.jpg&w=1920&q=75"
+          key="image"
+          content="https://pakapas-staging.netlify.app/_next/image?url=%2Fbackground%2Fhome_og.jpg&w=1920&q=75"
         />
         <meta property="og:image:alt" content="ภคภ1ส" />
+        <meta property="og:image:width" content="1920" />
+        <meta property="og:image:height" content="1005" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       {heading && (
         <Heading as="h1" size={subHeading ? "xl" : "2xl"} {...rest}>
