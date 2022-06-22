@@ -1,6 +1,4 @@
 import { readdir, readFile } from "fs/promises";
-import { MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
 import { basename, join } from "path";
 import { sections, Sections } from "../metadata";
 import { ContentMetadata, parseMetadata } from "./mdx";
@@ -24,7 +22,7 @@ export const getPoliciesFromDir = async (dir: Sections) => {
 };
 
 export type PolicyData = {
-  content: MDXRemoteSerializeResult;
+  content: string;
   metadata: ContentMetadata;
 };
 
@@ -39,29 +37,39 @@ export async function getPolicy(
 export async function getPolicy(
   dir: Sections,
   file: string,
-  withContent: true
+  withContent: "partial" | true
 ): Promise<PolicyData>;
-
 export async function getPolicy(
   dir: Sections,
   file: string,
-  withContent?: boolean
+  withContent?: "partial" | boolean
 ): Promise<any> {
   const filename = join(contentDir, dir, `${file}.mdx`);
   const source = await readFile(filename, {
     encoding: "utf-8",
   });
-  const match = frontmatterRegex.exec(source);
+  const match = frontmatterRegex.exec(source) as RegExpMatchArray;
   const metadata = parseMetadata(
     match ? load(match[1], { filename }) : null,
     filename
   );
   let content = undefined;
   if (match && withContent) {
-    const { compiledSource, scope } = await serialize(
-      source.slice(match[0].length)
-    );
-    content = { compiledSource, scope };
+    const markdown = source.slice(match[0].length);
+    content =
+      withContent === "partial"
+        ? markdown
+            .split("\n")
+            .slice(2, 5)
+            .reduce((prev, cur) => {
+              if (cur !== "" && !cur.startsWith("*")) {
+                if (prev.length < 180) {
+                  prev = (prev + " " + cur.replaceAll("*", "")).slice(0, 180);
+                }
+              }
+              return prev;
+            }, "")
+        : markdown;
   }
 
   return {

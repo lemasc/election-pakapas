@@ -1,17 +1,9 @@
-import { GetStaticPaths, GetStaticProps } from "next";
-import { Sections, isSectionValid, sections } from "../../utils/metadata";
-import { getPoliciesFromDir, getPolicy } from "../../utils/server";
+import { sections } from "../../utils/metadata";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 
 import Container from "../../components/layout/container";
 import Link from "../../components/Link";
-import {
-  BackgroundProps,
-  Box,
-  Stack,
-  Text,
-  ThemeTypings,
-} from "@chakra-ui/react";
+import { Stack, Text, ThemeTypings } from "@chakra-ui/react";
 import Title from "../../components/Title";
 import { useMemo, useState } from "react";
 import IconButton from "../../components/IconButton";
@@ -24,51 +16,12 @@ import {
   IconDefinition,
 } from "@fortawesome/free-regular-svg-icons";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
+import { StaticData } from "../../utils/staticProps/viewSurvey";
 
-type PolicyList = {
-  name: string;
-  title: string;
-};
-
-type StaticParam = {
-  section: Sections;
-};
-
-type StaticData = {
-  items: PolicyList[];
-  section: Sections;
-};
-
-export const getStaticPaths: GetStaticPaths<StaticParam> = async () => {
-  return {
-    paths: [{ params: { section: "main" } }],
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps: GetStaticProps<StaticData, StaticParam> = async ({
-  params,
-}) => {
-  const { section } = params ?? {};
-  if (section && isSectionValid(section)) {
-    return {
-      props: {
-        items: await getPoliciesFromDir(section).then((files) =>
-          Promise.all(
-            files.map(async (name) => ({
-              name: name as Sections,
-              title: (await getPolicy(section, name)).metadata.title,
-            }))
-          )
-        ),
-        section,
-      },
-    };
-  }
-  return {
-    redirect: "/survey",
-  } as any;
-};
+export {
+  getStaticProps,
+  getStaticPaths,
+} from "../../utils/staticProps/viewSurvey";
 
 type Buttons = {
   icon: IconDefinition;

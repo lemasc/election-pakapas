@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  ButtonProps,
   Heading,
   SimpleGrid,
   Stack,

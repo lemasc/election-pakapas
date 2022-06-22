@@ -3,12 +3,12 @@ import {
   getPoliciesDirs,
   getPoliciesFromDir,
   getPolicy,
+  PolicyData,
 } from "../server";
 import { GetStaticProps } from "next";
 import { Sections } from "../metadata";
 
-export type PolicyList = {
-  metadata: ContentMetadata;
+export type PolicyList = PolicyData & {
   name: string;
 };
 
@@ -25,9 +25,14 @@ export const getStaticProps: GetStaticProps<StaticData> = async () => {
         await Promise.all(
           files.map(async (name) => {
             try {
-              const { metadata } = await getPolicy(folder, name);
+              const { metadata, content } = await getPolicy(
+                folder,
+                name,
+                "partial"
+              );
               return {
                 metadata,
+                content,
                 name,
               };
             } catch {

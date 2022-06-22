@@ -1,17 +1,9 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Stack,
-  Text,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
 import Container from "../components/layout/container";
 import Title from "../components/Title";
-import Image from "next/image";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React from "react";
-import DynamicImage from "../components/DynamicImage";
+import HeroImage from "../components/HeroImage";
 
 function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
   return (
@@ -33,15 +25,8 @@ export default function IndexPage() {
   return (
     <>
       <Container transparent>
-        <Box mb="-2" w="full">
-          <DynamicImage
-            priority
-            alt="Home Background"
-            index={useBreakpointValue({ base: 1, sm: 0 }) as number}
-            src={["/background/home.jpg", "/background/home_mobile.jpg"]}
-            width={["1920", "1080"]}
-            height={["1080", "1920"]}
-          />
+        <Box mb="-2" w="full" minH="200px" bg="gray.100">
+          <HeroImage />
         </Box>
         <Box as="section" className="grid md:grid-cols-2">
           <SectionBox bg="gray.100">

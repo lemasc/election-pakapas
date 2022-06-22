@@ -13,37 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { ComponentProps, useEffect, useState } from "react";
-import Image, { ImageProps } from "next/image";
+import Image from "next/image";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import DynamicImage from "../DynamicImage";
-
-function Logo({
-  hidden,
-  light = true,
-  ...props
-}: {
-  light?: boolean;
-  hidden?: boolean;
-}) {
-  if (typeof hidden !== "undefined") {
-    // Applying display styles directly doesn't work, because NextJS add inline styles over it.
-    return (
-      <Box display={hidden ? "none" : undefined}>
-        <Logo light={light} />
-      </Box>
-    );
-  }
-  return (
-    <Image
-      alt="ภคภ1ส"
-      src={`/images/logo${light ? "_light" : ""}.png`}
-      width={60}
-      height={60}
-      {...props}
-    />
-  );
-}
+import logo from "../../public/images/logo.png";
+import logo_light from "../../public/images/logo_light.png";
 
 export default function Navbar({
   transparent,
@@ -65,6 +40,10 @@ export default function Navbar({
   const { pathname } = useRouter();
   const isMobile = useBreakpointValue({ base: true, sm: false });
 
+  const getImageCondition = () => {
+    if (pathname === "/") return !isMobile;
+    return false;
+  };
   return (
     // @ts-expect-error Props HTMLElement
     <Box
@@ -99,21 +78,31 @@ export default function Navbar({
               fontSize={"lg"}
               color={useColorModeValue("white", "gray.800")}
             >
-              {pathname === "/" ? (
+              {transparent ? (
                 <>
                   {/* Prefetch images ! */}
                   <DynamicImage
                     alt="ภคภ1ส"
-                    src={["/images/logo.png", "/images/logo_light.png"]}
+                    src={[logo, logo_light]}
+                    placeholder="blur"
                     width={60}
                     height={60}
                     index={
-                      top && (!isMobile || (isOpen && transparent)) ? 0 : 1
+                      top && ((isOpen && transparent) || getImageCondition())
+                        ? 0
+                        : 1
                     }
                   />
                 </>
               ) : (
-                <Logo />
+                <Image
+                  alt="ภคภ1ส"
+                  src={logo_light}
+                  placeholder="blur"
+                  width={60}
+                  height={60}
+                  {...props}
+                />
               )}
             </Text>
           </NextLink>
@@ -129,10 +118,8 @@ export default function Navbar({
           justify="flex-end"
         >
           <IconButton
-            color={isOpen && transparent && top ? "gray.600" : "white"}
-            _hover={
-              transparent && top && !isOpen ? { color: "gray.100" } : undefined
-            }
+            color={isOpen ? "gray.600" : "white"}
+            _hover={!isOpen ? { color: "gray.100" } : undefined}
             _focus={{}}
             onClick={onToggle}
             icon={

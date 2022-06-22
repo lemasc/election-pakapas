@@ -16,12 +16,12 @@ import { Sections, isSectionValid, sections } from "../../utils/metadata";
 import { useEffect, useMemo, useState } from "react";
 import Container from "../../components/layout/container";
 import NextLink from "next/link";
-import { StaticData } from "../../utils/staticProps/list";
+import { StaticData } from "../../utils/staticProps/listPolicy";
 
 import Title from "../../components/Title";
 import { useRouter } from "next/router";
 
-export { getStaticProps } from "../../utils/staticProps/list";
+export { getStaticProps } from "../../utils/staticProps/listPolicy";
 
 const sectionsToSelect = [
   ["all", "นโยบายทั้งหมด"],
@@ -109,18 +109,29 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
               as="article"
               w="full"
               display="flex"
-              alignItems={{ base: "flex-start", sm: "center" }}
-              flexDirection={{ base: "column", sm: "row" }}
+              alignItems={{ base: "flex-start", md: "center" }}
+              flexDirection={{ base: "column", md: "row" }}
               key={`${item.name}_${index}`}
-              p="5"
+              px="5"
+              py="6"
               borderWidth="1px"
               rounded="md"
+              gap={{ base: "2", lg: "6" }}
             >
-              <Heading size="md" my="2" flexGrow="1" mr="6">
-                <NextLink href={`/policy/${name}/${item.name}`} passHref>
-                  <LinkOverlay>{item.metadata.title}</LinkOverlay>
-                </NextLink>
-              </Heading>
+              <Stack flexGrow="1" spacing="2">
+                <Heading size="md">
+                  <NextLink href={`/policy/${name}/${item.name}`} passHref>
+                    <LinkOverlay>{item.metadata.title}</LinkOverlay>
+                  </NextLink>
+                </Heading>
+                <Box
+                  lineHeight={"2"}
+                  className="text-sm max-w-lg"
+                  noOfLines={2}
+                >
+                  {item.content}
+                </Box>
+              </Stack>
               <Tag
                 flexShrink={"0"}
                 size="md"

@@ -1,5 +1,3 @@
-import { join } from "path";
-
 export type ContentMetadata = {
   title: string;
   tags: string[];

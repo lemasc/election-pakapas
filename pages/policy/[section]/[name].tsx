@@ -1,54 +1,19 @@
-import { Box, Stack } from "@chakra-ui/react";
-import {
-  ContentMetadata,
-  getPoliciesFromDir,
-  getPolicy,
-} from "../../../utils/server";
-import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
+import { Stack } from "@chakra-ui/react";
+import { PolicyData } from "../../../utils/server";
+import { NextPage } from "next";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import Container from "../../../components/layout/container";
 import Link from "../../../components/Link";
-import { Sections } from "../../../utils/metadata";
 import Title from "../../../components/Title";
 
-import { basename } from "path";
+import ReactMarkdown from "react-markdown";
 
-type StaticParam = {
-  section: Sections;
-  name: string;
-};
+export {
+  getStaticPaths,
+  getStaticProps,
+} from "../../../utils/staticProps/viewPolicy";
 
-type StaticData = {
-  content: MDXRemoteSerializeResult;
-  metadata: ContentMetadata;
-};
-
-export const getStaticPaths: GetStaticPaths<StaticParam> = async () => {
-  const files = await getPoliciesFromDir("main");
-  return {
-    paths: files.map((name) => ({
-      params: { name: basename(name), section: "main" },
-    })),
-    fallback: "blocking",
-  };
-};
-
-export const getStaticProps: GetStaticProps<StaticData, StaticParam> = async ({
-  params,
-}) => {
-  const { name, section } = params ?? {};
-  if (!name || !section) {
-    return {
-      notFound: true,
-    };
-  }
-  return {
-    props: await getPolicy(section, name, true),
-  };
-};
-
-const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
+const ViewPolicyPage: NextPage<PolicyData> = ({ content, metadata }) => {
   return (
     <Container>
       <Stack gap="1.5">
@@ -65,9 +30,7 @@ const ViewPolicyPage: NextPage<StaticData> = ({ content, metadata }) => {
 
         <Title subHeading>{metadata.title}</Title>
       </Stack>
-      <Box className="content">
-        <MDXRemote {...content} />
-      </Box>
+      <ReactMarkdown className="content">{content}</ReactMarkdown>
     </Container>
   );
 };
