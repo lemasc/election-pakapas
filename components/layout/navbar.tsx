@@ -98,8 +98,11 @@ export default function Navbar({
                 <Image
                   alt="ภคภ1ส"
                   src={logo_light}
+                  // @ts-ignore
                   placeholder="blur"
+                  // @ts-ignore
                   width={60}
+                  // @ts-ignore
                   height={60}
                   {...props}
                 />
