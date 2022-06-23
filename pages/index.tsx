@@ -4,6 +4,7 @@ import Title from "../components/Title";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React from "react";
 import HeroImage from "../components/HeroImage";
+import Link from "next/link";
 import { pageDescription } from "../utils/metadata";
 
 function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
@@ -34,18 +35,22 @@ export default function IndexPage() {
             <Heading size={"lg"}>เกี่ยวกับภคภ1ส</Heading>
             <Text>{pageDescription["/about"]}</Text>
             <Box>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                รู้จักกับภคภ1ส
-              </Button>
+              <Link href="/about" passHref>
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
+                  รู้จักกับภคภ1ส
+                </Button>
+              </Link>
             </Box>
           </SectionBox>
           <SectionBox bg="orange.200">
             <Heading size={"lg"}>นโยบายของภคภ1ส</Heading>
             <Text maxW="md">{pageDescription["/policy"]}</Text>
             <Box>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                อ่านนโยบายของภคภ1ส
-              </Button>
+              <Link passHref href="/policy">
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
+                  อ่านนโยบายของภคภ1ส
+                </Button>
+              </Link>
             </Box>
           </SectionBox>
         </Box>
@@ -57,14 +62,19 @@ export default function IndexPage() {
           py="10"
           px={{ base: "8", md: "10", lg: "16" }}
         >
-          <Box w="full" maxW="4xl" mx="4" className="grid md:grid-cols-2 gap-8">
+          <Box w="full" maxW="5xl" mx="4" className="grid md:grid-cols-2 gap-8">
             <Stack spacing="4">
               <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
               <Text>{pageDescription["/survey"]}</Text>
               <Box>
-                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                  ทำแบบสอบถามของภคภ1ส
-                </Button>
+                <Link passHref href="/survey">
+                  <Button
+                    rightIcon={<ArrowForwardIcon />}
+                    colorScheme={"orange"}
+                  >
+                    ทำแบบสอบถามของภคภ1ส
+                  </Button>
+                </Link>
               </Box>
             </Stack>
             <Stack

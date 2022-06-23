@@ -7,6 +7,7 @@ import Link from "../../../components/Link";
 import Title from "../../../components/Title";
 
 import ReactMarkdown from "react-markdown";
+import Markdown from "../../../components/markdown";
 
 export {
   getStaticPaths,
@@ -30,7 +31,7 @@ const ViewPolicyPage: NextPage<PolicyData> = ({ content, metadata }) => {
 
         <Title subHeading>{metadata.title}</Title>
       </Stack>
-      <ReactMarkdown className="content">{content}</ReactMarkdown>
+      <Markdown>{content}</Markdown>
     </Container>
   );
 };
