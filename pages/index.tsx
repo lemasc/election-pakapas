@@ -4,6 +4,7 @@ import Title from "../components/Title";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React from "react";
 import HeroImage from "../components/HeroImage";
+import { pageDescription } from "../utils/metadata";
 
 function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
   return (
@@ -31,7 +32,7 @@ export default function IndexPage() {
         <Box as="section" className="grid md:grid-cols-2">
           <SectionBox bg="gray.100">
             <Heading size={"lg"}>เกี่ยวกับภคภ1ส</Heading>
-            <Text>ทุกเรื่องราวของภคภ1ส มีคำตอบอยู่ที่นี่</Text>
+            <Text>{pageDescription["/about"]}</Text>
             <Box>
               <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
                 รู้จักกับภคภ1ส
@@ -40,10 +41,7 @@ export default function IndexPage() {
           </SectionBox>
           <SectionBox bg="orange.200">
             <Heading size={"lg"}>นโยบายของภคภ1ส</Heading>
-            <Text maxW="md">
-              นโยบายของเรามุ่งเน้นการมีส่วนร่วมของนักเรียนเป็นสำคัญ
-              มาช่วยกันพัฒนาโรงเรียนของเรากันเถอะ !
-            </Text>
+            <Text maxW="md">{pageDescription["/policy"]}</Text>
             <Box>
               <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
                 อ่านนโยบายของภคภ1ส
@@ -62,10 +60,7 @@ export default function IndexPage() {
           <Box w="full" maxW="4xl" mx="4" className="grid md:grid-cols-2 gap-8">
             <Stack spacing="4">
               <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
-              <Text>
-                เสียงของทุกคนมีค่า มาแสดงความคิดเห็นต่อนโยบายของภคภ1ส
-                เพื่อร่วมกำหนดทิศทางของโรงเรียนไปด้วยกัน
-              </Text>
+              <Text>{pageDescription["/survey"]}</Text>
               <Box>
                 <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
                   ทำแบบสอบถามของภคภ1ส

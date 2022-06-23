@@ -1,6 +1,8 @@
 import Head from "next/head";
 import { Heading, TextProps } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
+import { getPageDescription } from "../utils/metadata";
 
 export default function Title({
   children,
@@ -13,6 +15,7 @@ export default function Title({
   subHeading?: boolean;
 } & Omit<TextProps, "children">) {
   const { pathname } = useRouter();
+  const description = useMemo(() => getPageDescription(pathname), [pathname]);
   return (
     <>
       <Head>
@@ -23,10 +26,7 @@ export default function Title({
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={`${children} - ภคภ1ส`} />
-        <meta
-          property="og:description"
-          content="ยินดีต้อนรับเข้าสู่เว็บไซต์ของนายภคภาส อัศวศิริวิลาศ ผู้สมัครประธานนักเรียนหมายเลข 1 ประจำปีการศึกษา 2565"
-        />
+        <meta property="og:description" content={description} />
         <meta
           property="og:image"
           key="image"
