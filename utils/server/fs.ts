@@ -5,6 +5,7 @@ import { ContentMetadata, parseMetadata } from "./mdx";
 import { load } from "js-yaml";
 import { existsSync } from "fs";
 import { contentDir } from "./shared";
+import { partialContent } from "../content";
 
 export const getPoliciesDirs = async () => {
   // We can't simply use `readdir`, because it sort alphabetically.
@@ -56,20 +57,7 @@ export async function getPolicy(
   let content = undefined;
   if (match && withContent) {
     const markdown = source.slice(match[0].length);
-    content =
-      withContent === "partial"
-        ? markdown
-            .split("\n")
-            .slice(2, 5)
-            .reduce((prev, cur) => {
-              if (cur !== "" && !cur.startsWith("*")) {
-                if (prev.length < 180) {
-                  prev = (prev + " " + cur.replaceAll("*", "")).slice(0, 180);
-                }
-              }
-              return prev;
-            }, "")
-        : markdown;
+    content = withContent === "partial" ? partialContent(markdown) : markdown;
   }
 
   return {

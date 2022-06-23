@@ -25,11 +25,13 @@ export default function IndexPage() {
       >
         <Box
           flexShrink={0}
-          className="w-full h-full lg:max-w-lg -mb-2 lg:mb-[unset]"
+          w="full"
+          h="full"
+          className="lg:max-w-lg -mb-2 lg:mb-[unset]"
         >
           <Image
             priority
-            alt="Home Background"
+            alt="เกี่ยวกับภคภ1ส"
             src={about_img1}
             placeholder="blur"
             layout="responsive"
@@ -114,11 +116,11 @@ export default function IndexPage() {
         </Box>
       </Box>
       <Stack
-        className="bg-gray-50"
+        bgColor="gray.50"
         as="section"
         px={{ base: "8", md: "10", lg: "12" }}
         py={{ base: "6", md: "10" }}
-        spacing="2"
+        spacing="4"
       >
         <Heading className="text-orange-600" as="h3" size={"lg"}>
           ประวัติการศึกษา
@@ -136,7 +138,7 @@ export default function IndexPage() {
       <Stack
         as="section"
         px={{ base: "8", md: "10", lg: "12" }}
-        py={{ base: "6", md: "10" }}
+        py={{ base: "8", md: "10" }}
         spacing="2"
       >
         <Heading className="text-orange-600" as="h3" size={"lg"}>
@@ -144,23 +146,27 @@ export default function IndexPage() {
         </Heading>
         <Markdown>
           {`- หัวหน้าห้อง ม.1/2, 4/2, และ 5/2 
-- ได้รับรางวัลผลการเรียนยอดเยี่ยม (คะแนนรวมสูงสุด) ชั้นม.3 และ ม.4/2 (แผนการเรียนภาษาอังกฤษ-คณิตศาสตร์)
+- ได้รับรางวัลผลการเรียนยอดเยี่ยม (คะแนนรวมสูงสุด) ชั้น ม.3 และ ม.4/2 (แผนการเรียนภาษาอังกฤษ-คณิตศาสตร์)
 - ชนะเลิศการประกวดเทพบุตร ระดับมัธยมศึกษาตอนต้น ประจำปี 2561, 2562, และ 2563 
-- พิธีกรงานสายสัมพันธ์พ.ม. ปีการศึกษา 2561 และ 2563
-- หัวหน้าฝ่ายบรรณาธิการ ชุมนุมสื่อสารมวลชน ปีการศึกษา 2564-ปัจจุบัน`}
+- พิธีกรงานสายสัมพันธ์ พ.ม. ปีการศึกษา 2561 และ 2563
+- หัวหน้าฝ่ายบรรณาธิการ ชุมนุมสื่อสารมวลชน ปีการศึกษา 2564 - ปัจจุบัน`}
         </Markdown>
       </Stack>
       <Box
-        className="flex md:flex-row flex-col gap-8 items-center"
+        display={"flex"}
+        flexDir={{ base: "column", md: "row" }}
+        justifyContent={{ base: "center", lg: "flex-start" }}
+        alignItems={"center"}
+        gap={{ base: "4", md: "10", xl: "20" }}
         px={{ base: "8", md: "10", lg: "12" }}
-        py={{ base: "6", md: "10" }}
+        py={{ base: "8", md: "10" }}
         bg="gray.50"
       >
-        <Stack as="section" spacing="2" className="flex-grow">
+        <Stack as="section" spacing="4" flexGrow={1}>
           <Heading className="text-orange-600" as="h3" size={"lg"}>
             ทำไมถึงลงสมัครรับเลือกตั้ง ?
           </Heading>
-          <Text className="content py-2">
+          <Text py="2" className="content">
             &quot;จริง ๆ มีหลายเหตุผลนะครับ
             แต่สิ่งที่สำคัญที่สุดคือผมมีความฝันครับ ฝันอยากเห็นโรงเรียนพัฒนาขึ้น
             อยากเห็นนักเรียนได้มีส่วนร่วมในการขับเคลื่อนโรงเรียนให้ก้าวไปข้างหน้า
@@ -176,10 +182,16 @@ export default function IndexPage() {
             ถ้าเราร่วมแรงร่วมใจเดินไปด้วยกัน ยังไงสักวันเราก็ต้องไปถึงครับ&quot;
           </Text>
         </Stack>
-        <Box flexShrink={0} className="max-w-xs">
+        <Box
+          flexShrink={0}
+          w="full"
+          display="flex"
+          justifyContent={"center"}
+          maxW={{ md: "xs" }}
+        >
           <Image
             priority
-            alt="Home Background"
+            alt="ภคภ1ส - ตึก 2"
             src={about_img2}
             placeholder="blur"
             objectFit="cover"

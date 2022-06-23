@@ -2,7 +2,7 @@ import { Box, Heading, Link, Stack, Text } from "@chakra-ui/react";
 import IconButton, { Props } from "../IconButton";
 import { faFacebookF, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
-import { FB_URL, IG_PERSONAL_URL } from "../../utils/metadata";
+import { FB_URL, IG_CANDIDATE_URL } from "../../utils/metadata";
 
 function ContactButton({
   href,
@@ -56,7 +56,7 @@ export default function Footer() {
             icon={faFacebookF}
           />
           <ContactButton
-            href={IG_PERSONAL_URL}
+            href={IG_CANDIDATE_URL}
             label="ติดต่อทาง Instagram"
             icon={faInstagram}
           />

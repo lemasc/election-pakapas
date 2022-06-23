@@ -26,7 +26,7 @@ export default function Container({
   const fullWidth = transparent || width === "full";
   return (
     <Box minH="100vh" h="full" flexDirection={"column"} display="flex">
-      <Navbar transparent={transparent} minHeight={"14"} />
+      <Navbar transparent={transparent} minH={"14"} />
       {/* @ts-expect-error Props */}
       <Wrapper
         flex="1"

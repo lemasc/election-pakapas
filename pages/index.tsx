@@ -6,6 +6,8 @@ import React from "react";
 import HeroImage from "../components/HeroImage";
 import Link from "next/link";
 import { pageDescription } from "../utils/metadata";
+import Image from "next/image";
+import surveyBox from "../public/images/survey_box.jpg";
 
 function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
   return (
@@ -16,7 +18,7 @@ function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
       display={"flex"}
       justifyContent="center"
     >
-      <Stack spacing="4" w="full" maxW="lg">
+      <Stack spacing="4" w="full" maxW={{ base: "xl", lg: "lg" }}>
         {children}
       </Stack>
     </Box>
@@ -57,30 +59,50 @@ export default function IndexPage() {
         <Box
           as="section"
           display={"flex"}
-          flexDirection={{ base: "row" }}
           justifyContent="center"
-          py="10"
+          py={{ base: "4", md: "10", lg: "8" }}
           px={{ base: "8", md: "10", lg: "16" }}
         >
-          <Box w="full" maxW="5xl" mx="4" className="grid md:grid-cols-2 gap-8">
-            <Stack spacing="4">
+          <Box
+            w="full"
+            maxW="5xl"
+            mx="4"
+            flexDirection={{ base: "column-reverse", md: "row" }}
+            gap={{ base: "2", lg: "8", xl: "12" }}
+            display="flex"
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            <Stack flexGrow={1} spacing={{ base: "4" }} maxW="md">
               <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
               <Text>{pageDescription["/survey"]}</Text>
+              <Text color="orange.600" fontWeight={"medium"}>
+                เมื่อทำแบบสอบถามแล้ว สามารถแชร์ลงบนโซเชียลมีเดียได้
+              </Text>
               <Box>
                 <Link passHref href="/survey">
                   <Button
+                    disabled
                     rightIcon={<ArrowForwardIcon />}
                     colorScheme={"orange"}
                   >
                     ทำแบบสอบถามของภคภ1ส
                   </Button>
                 </Link>
+                <Text fontSize="sm" py="4" color="orange.600">
+                  แบบสอบถามจะเปิดให้ทำได้ตั้งแต่วันที่ 1 ก.ค. เป็นต้นไป
+                </Text>
               </Box>
             </Stack>
-            <Stack
-              spacing="4"
-              className="border border-black w-50 h-50"
-            ></Stack>
+            <Box>
+              <Image
+                src={surveyBox}
+                width={400}
+                height={350}
+                objectFit="cover"
+                alt="แบบสอบถามของภคภ1ส"
+              />
+            </Box>
           </Box>
         </Box>
       </Container>

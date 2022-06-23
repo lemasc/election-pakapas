@@ -224,8 +224,8 @@ const NAV_ITEMS: Array<NavItem> = [
     label: "นโยบาย",
     href: "/policy",
   },
-  {
+  /*{
     label: "แบบสอบถาม",
     href: "/survey",
-  },
+  },*/
 ];

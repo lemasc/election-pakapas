@@ -11,9 +11,9 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { GetStaticProps, NextPage } from "next";
+import { NextPage } from "next";
 import { Sections, isSectionValid, sections } from "../../utils/metadata";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import Container from "../../components/layout/container";
 import NextLink from "next/link";
 import { StaticData } from "../../utils/staticProps/listPolicy";
@@ -126,7 +126,8 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
                 </Heading>
                 <Box
                   lineHeight={"2"}
-                  className="text-sm max-w-lg"
+                  fontSize="sm"
+                  maxW={{ md: "lg", lg: "xl" }}
                   noOfLines={2}
                 >
                   {item.content}
@@ -145,6 +146,9 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
           ));
         })}
       </Box>
+      <Text fontSize="sm" color="red.600">
+        *นโยบายทั้งหมดอาจมีการเปลี่ยนแปลงได้ตามความเหมาะสม*
+      </Text>
     </Container>
   );
 };
