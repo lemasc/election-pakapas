@@ -12,8 +12,34 @@ const isSectionValid = (section: string | string[]): section is Sections => {
   return typeof section === "string" && Object.keys(sections).includes(section);
 };
 
+const pageDescription: Record<string, string> = {
+  "/about":
+    "ทุกเรื่องราวเกี่ยวกับภคภ1ส มีคำตอบอยู่ที่นี่ ตั้งแต่สโมสรฟุตบอลที่ชอบ ยันเหตุผลที่ลงเลือกตั้ง",
+  "/policy":
+    "นโยบายของเรามุ่งเน้นการมีส่วนร่วมของนักเรียนเป็นสำคัญ มาช่วยกันพัฒนาโรงเรียนของเรากันเถอะ !",
+  "/survey":
+    "เสียงของทุกคนมีค่า มาแสดงความคิดเห็นต่อนโยบายของภคภ1ส เพื่อร่วมกำหนดทิศทางของโรงเรียนไปด้วยกัน",
+  "/": "ยินดีต้อนรับเข้าสู่เว็บไซต์ของนายภคภาส อัศวศิริวิลาศ ผู้สมัครประธานนักเรียนหมายเลข 1 ประจำปีการศึกษา 2565",
+};
+
+const getPageDescription = (pathname: string) => {
+  for (let page in pageDescription) {
+    if (pathname.startsWith(page)) {
+      return pageDescription[page];
+    }
+  }
+};
+
 const FB_URL = "https://www.facebook.com/profile.php?id=100009240238831";
 const IG_PERSONAL_URL = "https://www.instagram.com/pakapas_oat";
 const IG_CANDIDATE_URL = "https://www.instagram.com/pakapas.the1";
 
-export { sections, isSectionValid, FB_URL, IG_PERSONAL_URL, IG_CANDIDATE_URL };
+export {
+  sections,
+  isSectionValid,
+  FB_URL,
+  IG_PERSONAL_URL,
+  IG_CANDIDATE_URL,
+  pageDescription,
+  getPageDescription,
+};
