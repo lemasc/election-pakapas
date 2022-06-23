@@ -112,8 +112,8 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
               alignItems={{ base: "flex-start", md: "center" }}
               flexDirection={{ base: "column", md: "row" }}
               key={`${item.name}_${index}`}
-              px="5"
-              py="6"
+              px={{ base: "5", lg: "8" }}
+              py={{ base: "6", lg: "7" }}
               borderWidth="1px"
               rounded="md"
               gap={{ base: "2", lg: "6" }}

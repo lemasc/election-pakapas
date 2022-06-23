@@ -4,6 +4,7 @@ import Title from "../components/Title";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
 import React from "react";
 import HeroImage from "../components/HeroImage";
+import Link from "next/link";
 
 function SectionBox({ children, ...rest }: React.ComponentProps<typeof Box>) {
   return (
@@ -31,11 +32,16 @@ export default function IndexPage() {
         <Box as="section" className="grid md:grid-cols-2">
           <SectionBox bg="gray.100">
             <Heading size={"lg"}>เกี่ยวกับภคภ1ส</Heading>
-            <Text>ทุกเรื่องราวของภคภ1ส มีคำตอบอยู่ที่นี่</Text>
+            <Text>
+              ทุกเรื่องราวเกี่ยวกับภคภ1ส มีคำตอบอยู่ที่นี่
+              ตั้งแต่สโมสรฟุตบอลที่ชอบ ยันเหตุผลที่ลงเลือกตั้ง
+            </Text>
             <Box>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                รู้จักกับภคภ1ส
-              </Button>
+              <Link href="/about" passHref>
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
+                  รู้จักกับภคภ1ส
+                </Button>
+              </Link>
             </Box>
           </SectionBox>
           <SectionBox bg="orange.200">
@@ -45,9 +51,11 @@ export default function IndexPage() {
               มาช่วยกันพัฒนาโรงเรียนของเรากันเถอะ !
             </Text>
             <Box>
-              <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                อ่านนโยบายของภคภ1ส
-              </Button>
+              <Link passHref href="/policy">
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
+                  อ่านนโยบายของภคภ1ส
+                </Button>
+              </Link>
             </Box>
           </SectionBox>
         </Box>
@@ -59,7 +67,7 @@ export default function IndexPage() {
           py="10"
           px={{ base: "8", md: "10", lg: "16" }}
         >
-          <Box w="full" maxW="4xl" mx="4" className="grid md:grid-cols-2 gap-8">
+          <Box w="full" maxW="5xl" mx="4" className="grid md:grid-cols-2 gap-8">
             <Stack spacing="4">
               <Heading size={"lg"}>แบบสอบถามของภคภ1ส</Heading>
               <Text>
@@ -67,9 +75,14 @@ export default function IndexPage() {
                 เพื่อร่วมกำหนดทิศทางของโรงเรียนไปด้วยกัน
               </Text>
               <Box>
-                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
-                  ทำแบบสอบถามของภคภ1ส
-                </Button>
+                <Link passHref href="/survey">
+                  <Button
+                    rightIcon={<ArrowForwardIcon />}
+                    colorScheme={"orange"}
+                  >
+                    ทำแบบสอบถามของภคภ1ส
+                  </Button>
+                </Link>
               </Box>
             </Stack>
             <Stack

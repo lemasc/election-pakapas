@@ -2,6 +2,7 @@ import { Box, Heading, Link, Stack, Text } from "@chakra-ui/react";
 import IconButton, { Props } from "../IconButton";
 import { faFacebookF, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import Image from "next/image";
+import { FB_URL, IG_PERSONAL_URL } from "../../utils/metadata";
 
 function ContactButton({
   href,
@@ -50,12 +51,12 @@ export default function Footer() {
         </Text>
         <Stack my="2" justifyContent={"flex-start"} direction="row">
           <ContactButton
-            href="https://www.facebook.com/profile.php?id=100009240238831"
+            href={FB_URL}
             label="ติดต่อทาง Facebook"
             icon={faFacebookF}
           />
           <ContactButton
-            href="https://www.instagram.com/pakapas.the1"
+            href={IG_PERSONAL_URL}
             label="ติดต่อทาง Instagram"
             icon={faInstagram}
           />

@@ -30,12 +30,25 @@
 }
 
 .form-container {
-  @apply gap-3 lg:gap-2 grid items-center justify-center;
+  @apply gap-3 lg:gap-2;
   grid-template-columns: max-content 1fr;
 }
+
+.form-container:not(.form-container-sm) {
+  @apply grid items-center justify-center;
+}
+
+.form-container.form-container-sm {
+  @apply flex flex-col lg:grid md:items-center md:justify-center;
+}
+
 .form-container > *:nth-child(odd) {
   @apply md:mr-8;
 }
 .form-container > *:nth-child(even) {
   @apply w-full;
+}
+
+.form-container > b {
+  @apply font-medium;
 }

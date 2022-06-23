@@ -25,7 +25,7 @@ export default function Title({
         <meta property="og:title" content={`${children} - ภคภ1ส`} />
         <meta
           property="og:description"
-          content="ยินดีต้อนรับเข้าสู่เว็บไซต์ของนายภคภาส อัศวศิริวิลาศ ผู้สมัครประธานนักเรียนหมายเลข 1 ประจำปีการศึกษา 2565"
+          content="ยินดีต้อนรับสู่เว็บไซต์ที่รวบรวมข้อมูลและนโยบายทั้งหมดของภคภ1ส"
         />
         <meta
           property="og:image"

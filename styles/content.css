@@ -15,7 +15,7 @@
 }
 
 .content h3 {
-  @apply text-xl font-bold pb-2 mb-2 border-b border-gray-300;
+  @apply text-xl font-bold py-2 mb-2 border-b border-gray-200;
 }
 
 .content h4 {
@@ -23,7 +23,7 @@
 }
 
 .content li {
-  @apply ml-4;
+  @apply ml-6 md:ml-8;
 }
 
 .content ol {
