@@ -5,7 +5,7 @@ export const partialContent = (markdown: string): string => {
     .reduce((prev, cur) => {
       if (cur !== "" && !cur.startsWith("*")) {
         if (prev.length < 180) {
-          prev = prev + " " + cur.replaceAll("*", "");
+          prev = prev + " " + cur.replace(/\*/g, "");
           if (prev.length > 180) {
             prev = prev.slice(0, 210).split(" ").slice(0, -1).join(" ");
           }
