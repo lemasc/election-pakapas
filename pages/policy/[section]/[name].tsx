@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Stack } from "@chakra-ui/react";
 import { PolicyData } from "../../../utils/server";
 import { NextPage } from "next";
@@ -10,6 +10,8 @@ import Title from "../../../components/Title";
 
 import Markdown from "../../../components/markdown";
 import { partialContent } from "../../../utils/content";
+import { analytics, logEvent, withAnalytics } from "../../../utils/analytics";
+import { useRouter } from "next/router";
 
 export {
   getStaticPaths,
@@ -17,7 +19,32 @@ export {
 } from "../../../utils/staticProps/viewPolicy";
 
 const ViewPolicyPage: NextPage<PolicyData> = ({ content, metadata }) => {
+  const { query } = useRouter();
   const description = useMemo(() => partialContent(content), [content]);
+
+  useEffect(() => {
+    const { name, section } = query ?? {};
+    if (
+      name &&
+      section &&
+      metadata &&
+      typeof name === "string" &&
+      typeof section === "string"
+    ) {
+      withAnalytics((analytics) => {
+        logEvent(analytics, "view_item", {
+          items: [
+            {
+              item_category: section,
+              item_name: metadata.title,
+              item_id: name,
+            },
+          ],
+        });
+      });
+    }
+  }, [query, metadata]);
+
   return (
     <Container>
       <Stack gap="1.5">

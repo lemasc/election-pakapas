@@ -99,6 +99,7 @@ export default function IndexPage() {
                 src={surveyBox}
                 width={400}
                 height={350}
+                placeholder="blur"
                 objectFit="cover"
                 alt="แบบสอบถามของภคภ1ส"
               />

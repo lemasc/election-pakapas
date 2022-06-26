@@ -104,7 +104,6 @@ export default function Navbar({
                   width={60}
                   // @ts-ignore
                   height={60}
-                  {...props}
                 />
               )}
             </Text>

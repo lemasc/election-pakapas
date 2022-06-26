@@ -13,13 +13,14 @@ import {
 
 import { NextPage } from "next";
 import { Sections, isSectionValid, sections } from "../../utils/metadata";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Container from "../../components/layout/container";
 import NextLink from "next/link";
 import { StaticData } from "../../utils/staticProps/listPolicy";
 
 import Title from "../../components/Title";
 import { useRouter } from "next/router";
+import { analytics, logEvent, withAnalytics } from "../../utils/analytics";
 
 export { getStaticProps } from "../../utils/staticProps/listPolicy";
 
@@ -57,6 +58,20 @@ const PoliciesPage: NextPage<StaticData> = ({ items }) => {
       });
     }
   }, [query, replace]);
+
+  const analyticsTimeout = useRef<NodeJS.Timeout>();
+  useEffect(() => {
+    if (analyticsTimeout.current) {
+      clearTimeout(analyticsTimeout.current);
+    }
+    analyticsTimeout.current = setTimeout(() => {
+      withAnalytics((analytics) => {
+        logEvent(analytics, "view_item_list", {
+          item_list_name: selected,
+        });
+      });
+    }, 200);
+  }, [selected]);
 
   const itemsObj = useMemo(() => Object.fromEntries(items), [items]);
 
