@@ -10,7 +10,7 @@ import { theme } from "../styles/theme";
 import { usePageEvent } from "../utils/analytics";
 
 function App({ Component, pageProps }: AppProps) {
-  usePageEvent();
+  //usePageEvent();
   return (
     <ChakraProvider theme={theme}>
       <Component {...pageProps} />
