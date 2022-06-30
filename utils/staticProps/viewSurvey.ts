@@ -2,7 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { Sections, isSectionValid, sections } from "../../utils/metadata";
 import { getPoliciesFromDir, getPolicy } from "../../utils/server";
 
-type PolicyList = {
+export type PolicyList = {
   name: string;
   title: string;
 };
