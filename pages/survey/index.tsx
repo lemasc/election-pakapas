@@ -12,6 +12,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Link as UILink,
 } from "@chakra-ui/react";
 
 import { Sections, sections } from "../../utils/metadata";
@@ -34,11 +35,17 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import Script from "next/script";
-import Head from "next/head";
 
 type ApiResult = {
   success: boolean;
   message: string;
+};
+
+declare var FB: {
+  ui: (
+    props: { method: "share"; href: string },
+    callback: (err: any) => void
+  ) => void;
 };
 
 function SurveyShareImage({ onClose }: { onClose: () => void }) {
@@ -142,6 +149,15 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               บันทึกลงในอุปกรณ์
             </Button>
             <Button
+              onClick={() => {
+                FB.ui(
+                  {
+                    method: "share",
+                    href: "https://pakapas.netlify.app",
+                  },
+                  console.error
+                );
+              }}
               leftIcon={
                 <FontAwesomeIcon
                   size="lg"
@@ -153,14 +169,25 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
             >
               แชร์ไปยัง Facebook
             </Button>
-            <Button
-              leftIcon={
-                <FontAwesomeIcon size="lg" className="-mt-0.5" icon={faLine} />
-              }
-              colorScheme="green"
+            <a
+              href="https://social-plugins.line.me/lineit/share?url=https://pakapas.netlify.app"
+              target="_blank"
+              rel="noreferrer noopener"
             >
-              แชร์ไปยัง LINE
-            </Button>
+              <Button
+                w="full"
+                leftIcon={
+                  <FontAwesomeIcon
+                    size="lg"
+                    className="-mt-0.5"
+                    icon={faLine}
+                  />
+                }
+                colorScheme="green"
+              >
+                แชร์ไปยัง LINE
+              </Button>
+            </a>
             <Button
               leftIcon={
                 <FontAwesomeIcon
@@ -197,6 +224,7 @@ function SectionButton({ section, ...rest }: { section: Sections }) {
   const imageSize = useBreakpointValue({ base: 70, md: 100 });
   const cardHeight = useBreakpointValue({ base: 150, md: 180 });
   const isAnswered = useSurveyAnswered(section);
+
   return (
     <Link href={`/survey/${section}`} passHref>
       <Button
@@ -246,11 +274,24 @@ export default function Survey() {
   return (
     <Container>
       <Script
-        src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js"
-        id="lineScript"
+        src="https://connect.facebook.net/en_US/sdk.js"
+        id="fbScript"
+        async
+        defer
+        crossOrigin="anonymous"
         strategy="lazyOnload"
       />
       <Script />
+      <Script id="fbInitScript" strategy="lazyOnload">
+        {`window.fbAsyncInit = function() {
+            FB.init({
+              appId            : '776738080431714',
+              autoLogAppEvents : true,
+              xfbml            : true,
+              version          : 'v14.0'
+            });
+          };`}
+      </Script>
 
       <Stack spacing="4" direction={{ base: "column", md: "row" }}>
         <Title flexGrow={1}>แบบสอบถาม</Title>

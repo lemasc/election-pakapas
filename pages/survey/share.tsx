@@ -68,7 +68,9 @@ export default function Share({ name, section }: TokenData) {
           alignItems={"center"}
           justifyContent="center"
         >
-          <Text fontWeight={"medium"}>คุณก็สามารถร่วมเป็นส่วนหนึ่งของแบบสอบถามนี้ได้ ทำเลย!</Text>
+          <Text fontWeight={"medium"}>
+            คุณก็สามารถร่วมเป็นส่วนหนึ่งของแบบสอบถามนี้ได้ ทำเลย!
+          </Text>
         </Box>
       </Box>
       <Box
@@ -99,11 +101,7 @@ export default function Share({ name, section }: TokenData) {
 
             <Box>
               <Link passHref href="/survey">
-                <Button
-                  disabled
-                  rightIcon={<ArrowForwardIcon />}
-                  colorScheme={"orange"}
-                >
+                <Button rightIcon={<ArrowForwardIcon />} colorScheme={"orange"}>
                   ทำแบบสอบถามของภคภ1ส
                 </Button>
               </Link>

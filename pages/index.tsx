@@ -82,7 +82,6 @@ export default function IndexPage() {
               <Box>
                 <Link passHref href="/survey">
                   <Button
-                    disabled
                     rightIcon={<ArrowForwardIcon />}
                     colorScheme={"orange"}
                   >
