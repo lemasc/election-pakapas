@@ -27,6 +27,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { scrollToTarget } from "../../utils/scroll";
 import axios from "axios";
+import { DownloadIcon } from "@chakra-ui/icons";
+import {
+  faFacebook,
+  faLine,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import Script from "next/script";
+import Head from "next/head";
 
 type ApiResult = {
   success: boolean;
@@ -125,6 +133,47 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               บันทึก
             </Button>
           </Stack>
+          <Stack spacing="3">
+            <Button
+              leftIcon={<DownloadIcon />}
+              colorScheme="orange"
+              variant="outline"
+            >
+              บันทึกลงในอุปกรณ์
+            </Button>
+            <Button
+              leftIcon={
+                <FontAwesomeIcon
+                  size="lg"
+                  className="-mt-0.5"
+                  icon={faFacebook}
+                />
+              }
+              colorScheme="facebook"
+            >
+              แชร์ไปยัง Facebook
+            </Button>
+            <Button
+              leftIcon={
+                <FontAwesomeIcon size="lg" className="-mt-0.5" icon={faLine} />
+              }
+              colorScheme="green"
+            >
+              แชร์ไปยัง LINE
+            </Button>
+            <Button
+              leftIcon={
+                <FontAwesomeIcon
+                  size="lg"
+                  className="-mt-0.5"
+                  icon={faTwitter}
+                />
+              }
+              colorScheme="twitter"
+            >
+              แชร์ไปยัง Twitter
+            </Button>
+          </Stack>
         </Stack>
         <Box>
           {token && (
@@ -133,7 +182,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               width={960}
               height={1706}
               onLoadingComplete={() => setLoading(false)}
-              className="rounded-md"
+              className={`rounded-md ${loading ? "" : "hidden"}`}
               src={`/api/survey/story?token=${token}`}
             />
           )}
@@ -196,6 +245,13 @@ export default function Survey() {
   const toggleBoxRef = useRef<HTMLDivElement | null>();
   return (
     <Container>
+      <Script
+        src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js"
+        id="lineScript"
+        strategy="lazyOnload"
+      />
+      <Script />
+
       <Stack spacing="4" direction={{ base: "column", md: "row" }}>
         <Title flexGrow={1}>แบบสอบถาม</Title>
         <AuthStatus />

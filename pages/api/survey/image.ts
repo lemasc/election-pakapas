@@ -3,16 +3,7 @@ import admin from "../../../utils/firebase-admin";
 import type { Sections } from "../../../utils/metadata";
 import type { Metadata } from "../../../utils/userStore";
 import { sealData } from "iron-session";
-
-type TokenData = {
-  name: string;
-  section: Sections[];
-};
-
-const sessionOptions = {
-  password: process.env.SESSION_PASSWORD as string,
-  ttl: 0,
-};
+import { TokenData, sessionOptions } from "../../../utils/survey";
 
 const auth = admin.auth();
 const db = admin.firestore();
