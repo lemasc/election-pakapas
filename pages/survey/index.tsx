@@ -106,6 +106,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
             <FormControl>
               <FormLabel htmlFor="name">ชื่อผู้ทำแบบสอบถาม</FormLabel>
               <Input
+                isDisabled={loading}
                 bg="white"
                 onChange={(e) => {
                   nameRef.current = e.target.value.trim();
@@ -116,7 +117,11 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               />
             </FormControl>
 
-            <Button onClick={submit} colorScheme={"orange"}>
+            <Button
+              isDisabled={loading}
+              onClick={submit}
+              colorScheme={"orange"}
+            >
               บันทึก
             </Button>
           </Stack>
@@ -127,6 +132,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               alt="Image"
               width={960}
               height={1706}
+              onLoadingComplete={() => setLoading(false)}
               className="rounded-md"
               src={`/api/survey/story?token=${token}`}
             />
