@@ -3,7 +3,9 @@ import admin from "../../../utils/firebase-admin";
 import type { Sections } from "../../../utils/metadata";
 import type { Metadata } from "../../../utils/userStore";
 import { sealData } from "iron-session";
-import { TokenData, sessionOptions } from "../../../utils/survey";
+import { TokenData, sessionOptions, SnapshotData } from "../../../utils/survey";
+import { nanoid } from "nanoid";
+import { FieldValue } from "firebase-admin/firestore";
 
 const auth = admin.auth();
 const db = admin.firestore();
@@ -18,13 +20,6 @@ const getSurveyFromUser = async (uid: string) => {
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "X-Requested-With, Authorization, Accept, Content-Type"
-  );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -47,9 +42,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       name: req.body.name,
       section: Object.keys(metadata.sections) as Sections[],
     };
+    const token = await sealData(tokenData, sessionOptions);
+    const snapshot = nanoid(25);
+    const snapshotData: SnapshotData = {
+      ...tokenData,
+      uid: user.uid,
+      token,
+    };
+    await db
+      .collection("snapshots")
+      .doc(snapshot)
+      .set({ ...snapshotData, createdAt: FieldValue.serverTimestamp() });
+
     res.status(200).json({
       success: true,
-      message: await sealData(tokenData, sessionOptions),
+      message: token,
+      snapshot,
     });
   } catch (err) {
     console.error(err);

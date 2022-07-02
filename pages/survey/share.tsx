@@ -1,8 +1,7 @@
 import { GetServerSideProps } from "next";
 import { Box, Heading, Stack, Text, Button } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { TokenData, sessionOptions } from "../../utils/survey";
-import { unsealData } from "iron-session";
+import { TokenData, verifyAndUnseal } from "../../utils/survey";
 import Container from "../../components/layout/container";
 import Link from "next/link";
 import { pageDescription, sections } from "../../utils/metadata";
@@ -12,24 +11,13 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 
-const verifyProps = (props: Record<string, any>): props is TokenData => {
-  return (
-    props.name &&
-    typeof props.name === "string" &&
-    props.section &&
-    Array.isArray(props.section)
-  );
-};
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const { token } = ctx.query ?? {};
     if (!token || typeof token !== "string")
       throw new Error("Invalid token param");
 
-    const props = await unsealData(token, sessionOptions);
-    if (!verifyProps(props)) throw new Error("Invalid props");
-    const { name, section } = props;
+    const { name, section } = await verifyAndUnseal(token);
     return {
       props: {
         name,
@@ -76,13 +64,19 @@ export default function Share({ name, section }: TokenData) {
             spacing="4"
             className="w-full max-w-lg text-center px-4 py-6 bg-white bg-opacity-75 flex flex-col items-center justify-center rounded-md"
           >
-            <Heading>{name}</Heading>
-            <Text fontWeight={"medium"}>
+            <Heading color="orange.700">{name}</Heading>
+            <Text color="orange.600" fontWeight={"medium"}>
               ได้ทำแบบสอบถามเกี่ยวกับนโยบายของภคภ1สแล้ว
               <br />
               มาร่วมเป็นอีก 1 เสียงในการกำหนดทิศทางของโรงเรียนกันเถอะ
             </Text>
-            <Stack flexDirection="row" gap="4">
+            <Stack
+              flexDirection="row"
+              justifyContent={"center"}
+              alignItems="center"
+              gap="4"
+              flexWrap="wrap"
+            >
               {section.map((section) => (
                 <Image
                   key={section}
@@ -93,7 +87,7 @@ export default function Share({ name, section }: TokenData) {
                   width={50}
                   height={50}
                   draggable={false}
-                  className="saturate-50"
+                  className="saturate-50 opacity-80"
                 />
               ))}
             </Stack>
