@@ -124,11 +124,16 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         });
       });
       if (method === "save") {
-        if (/Line|FBAN|FBAV\//gi.test(navigator.userAgent)) {
+        if (
+          ["fb", "ig", "line"].some((v) =>
+            navigator.userAgent.toLowerCase().includes(v)
+          )
+        ) {
           // Use legacy downlaod header
           window.location.replace(
             "/api/survey/download?token=" + result.message
           );
+          console.log("In app broswer");
           return;
         }
         if (imageRef.current?.src) {
