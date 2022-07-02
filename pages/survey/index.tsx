@@ -253,7 +253,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               {loading ? "กำลังโหลด..." : "บันทึก"}
             </Button>
           </Stack>
-          <Collapse in={ฺBoolean(!loading && token)} animateOpacity>
+          <Collapse in={loading && !token} animateOpacity>
             <Stack spacing="3">
               <Text fontWeight="medium">ตัวเลือกการแชร์</Text>
               <Button
