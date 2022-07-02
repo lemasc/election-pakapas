@@ -56,19 +56,18 @@ export default function Share({ name, section }: TokenData) {
         <title>{title}</title>
         <meta
           property="og:url"
-          content={`https://pakapas.netlify.app${pathname}?token=${query.token}`}
+          content={`${
+            process.env.DEPLOY_PRIME_URL ?? "https://pakapas.netlify.app"
+          }${pathname}?token=${query.token}`}
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
-        <meta
-          property="og:description"
-          key="description"
-          content={pageDescription["/survey"]}
-        />
+        <meta property="og:description" content={pageDescription["/survey"]} />
         <meta
           property="og:image"
-          key="image"
-          content={`https://pakapas.netlify.app/api/survey/og?token=${query.token}`}
+          content={`${
+            process.env.DEPLOY_PRIME_URL ?? "https://pakapas.netlify.app"
+          }/api/survey/og?token=${query.token}`}
         />
         <meta property="og:image:alt" content={title} />
         <meta property="og:image:width" content="1200" />
