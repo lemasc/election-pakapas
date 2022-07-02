@@ -17,8 +17,17 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (!token || typeof token !== "string")
       throw new Error("Invalid token param");
 
+    const {
+      name,
+      section,
+      token: sealedToken,
+    } = (await verifyAndUnseal(token)) as SnapshotData;
     return {
-      props: await verifyAndUnseal(token),
+      props: {
+        name,
+        section,
+        token: sealedToken ?? token,
+      },
     };
   } catch (err) {
     console.error(err);
