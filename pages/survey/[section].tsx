@@ -16,6 +16,7 @@ import {
 } from "../../utils/surveyStore";
 import { useRouter } from "next/router";
 import { scrollToTarget } from "../../utils/scroll";
+import { logEvent, withAnalytics } from "../../utils/analytics";
 
 export {
   getStaticProps,
@@ -49,6 +50,11 @@ function SectionSurvey({ items, section }: StaticData) {
     const snapshot = useAuth.getState();
     try {
       await snapshot.answerSurvey(section, selected as number[]);
+      withAnalytics((analytics) =>
+        logEvent(analytics, "unlock_achievement", {
+          achievement_id: section,
+        })
+      );
       setTimeout(
         () =>
           toast({

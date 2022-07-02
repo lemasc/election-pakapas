@@ -6,3 +6,13 @@ package = "@netlify/plugin-nextjs"
 
 [functions]
 included_files = ["content/dist/**"]
+
+[[redirects]]
+from = "/api/survey/story"
+to = "https://election-pakapas-survey.vercel.app/api/story"
+status = 200
+
+[[redirects]]
+from = "/api/survey/og"
+to = "https://election-pakapas-survey.vercel.app/api/og"
+status = 200
