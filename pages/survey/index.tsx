@@ -38,6 +38,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import Script from "next/script";
 import { logEvent, withAnalytics } from "../../utils/analytics";
+import InApp from "../../utils/inapp";
 
 type ApiResult = {
   success: boolean;
@@ -58,10 +59,10 @@ declare var FB: {
   ) => void;
 };
 
-const getShareParams = (name: string, token: string): ShareParams => {
+const getShareParams = (name: string, result: ApiResult): ShareParams => {
   return {
     quote: `${name} ได้ทำแบบสอบถามของภคภ1ส คุณก็สามารถร่วมเป็นส่วนหนึ่งได้ ทำเลย!`,
-    href: `${window.location.origin}/survey/share?token=${token}`,
+    href: `${window.location.origin}/survey/share?token=${result.snapshot}`,
     hashtag: "#ภคภ1ส",
   };
 };
@@ -73,7 +74,7 @@ const requestImage = (token: string) => {
 function SurveyShareImage({ onClose }: { onClose: () => void }) {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<string>();
+  const [result, setResult] = useState<ApiResult>();
   const imageRef = useRef<HTMLImageElement | null>();
   const nameRef = useRef<string>(
     localStorage.getItem("survey-share-name") ??
@@ -99,7 +100,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
           },
         }
       );
-      setToken(data.snapshot);
+      setResult(data);
       const image = await requestImage(data.message);
       if (imageRef.current) {
         if (imageRef.current.src) {
@@ -115,7 +116,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
 
   const share = useCallback(
     (method: "save" | "facebook" | "line" | "twitter" | "clipboard") => {
-      if (!token) return;
+      if (!result) return;
       withAnalytics((a) => {
         logEvent(a, "share", {
           content_type: method === "save" ? "image" : "link",
@@ -124,6 +125,14 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         });
       });
       if (method === "save") {
+        const userAgent = new InApp(navigator.userAgent);
+        if (userAgent.isInApp) {
+          // Use legacy downlaod header
+          window.location.replace(
+            "/api/survey/download?token=" + result.message
+          );
+          return;
+        }
         if (imageRef.current?.src) {
           const a = document.createElement("a");
           document.body.appendChild(a);
@@ -137,7 +146,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         return;
       }
 
-      const params = getShareParams(nameRef.current, token);
+      const params = getShareParams(nameRef.current, result);
 
       if (method === "clipboard") {
         navigator.clipboard.writeText(params.href);
@@ -178,7 +187,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         window.open(targetUrl, "_blank", "noopener,noreferrer");
       }
     },
-    [token, toast]
+    [result, toast]
   );
 
   return (
@@ -250,7 +259,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               {loading ? "กำลังโหลด..." : "บันทึก"}
             </Button>
           </Stack>
-          <Collapse in={!loading && !!token} animateOpacity>
+          <Collapse in={!loading && !!result} animateOpacity>
             <Stack spacing="3">
               <Text fontWeight="medium">ตัวเลือกการแชร์</Text>
               <Button
@@ -317,7 +326,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
           </Collapse>
         </Stack>
         <Box>
-          {token && (
+          {result && (
             // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
             <img
               width={"960"}
