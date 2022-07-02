@@ -125,8 +125,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         });
       });
       if (method === "save") {
-        const userAgent = new InApp(navigator.userAgent);
-        if (userAgent.isInApp) {
+        if (/Line|FBAN|FBAV\//gi.test(navigator.userAgent)) {
           // Use legacy downlaod header
           window.location.replace(
             "/api/survey/download?token=" + result.message
