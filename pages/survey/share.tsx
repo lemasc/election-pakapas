@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { Box, Heading, Stack, Text, Button } from "@chakra-ui/react";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { TokenData, verifyAndUnseal } from "../../utils/survey";
+import { SnapshotData, verifyAndUnseal } from "../../utils/survey";
 import Container from "../../components/layout/container";
 import Link from "next/link";
 import { pageDescription, sections } from "../../utils/metadata";
@@ -17,12 +17,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     if (!token || typeof token !== "string")
       throw new Error("Invalid token param");
 
-    const { name, section } = await verifyAndUnseal(token);
     return {
-      props: {
-        name,
-        section,
-      },
+      props: await verifyAndUnseal(token),
     };
   } catch (err) {
     console.error(err);
@@ -35,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 };
 
-export default function Share({ name, section }: TokenData) {
+export default function Share({ name, section, token }: SnapshotData) {
   const { pathname, query } = useRouter();
   const title = useMemo(() => `${name} ได้ทำแบบสอบถามของภคภ1สแล้ว`, [name]);
   return (
@@ -51,7 +47,7 @@ export default function Share({ name, section }: TokenData) {
         <meta property="og:description" content={pageDescription["/survey"]} />
         <meta
           property="og:image"
-          content={`https://pakapas.netlify.app/api/survey/og?token=${query.token}`}
+          content={`https://pakapas.netlify.app/api/survey/og?token=${token}`}
         />
         <meta property="og:image:alt" content={title} />
         <meta property="og:image:width" content="1200" />

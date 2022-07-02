@@ -33,10 +33,7 @@ const parseToken = async (token: string): Promise<TokenData> => {
       await admin.firestore().collection("snapshots").doc(token).get()
     ).data();
     if (snapshot && isTokenSnapshot(snapshot)) {
-      return {
-        name: snapshot.name,
-        section: snapshot.section,
-      };
+      return snapshot;
     }
   }
   return await unsealData<TokenData>(token, sessionOptions);
