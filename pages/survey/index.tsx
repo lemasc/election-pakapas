@@ -14,6 +14,7 @@ import {
   Input,
   Link as UILink,
   useToast,
+  Collapse,
 } from "@chakra-ui/react";
 
 import { Sections, sections } from "../../utils/metadata";
@@ -252,7 +253,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               {loading ? "กำลังโหลด..." : "บันทึก"}
             </Button>
           </Stack>
-          {!loading && token && (
+          <Collapse in={ฺBoolean(!loading && token)} animateOpacity>
             <Stack spacing="3">
               <Text fontWeight="medium">ตัวเลือกการแชร์</Text>
               <Button
@@ -316,7 +317,7 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
                 แชร์ไปยัง LINE
               </Button>
             </Stack>
-          )}
+          </Collapse>
         </Stack>
         <Box>
           {token && (

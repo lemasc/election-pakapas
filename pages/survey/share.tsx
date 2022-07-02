@@ -56,18 +56,14 @@ export default function Share({ name, section }: TokenData) {
         <title>{title}</title>
         <meta
           property="og:url"
-          content={`${
-            process.env.DEPLOY_PRIME_URL ?? "https://pakapas.netlify.app"
-          }${pathname}?token=${query.token}`}
+          content={`https://pakapas.netlify.app?token=${query.token}`}
         />
         <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={pageDescription["/survey"]} />
         <meta
           property="og:image"
-          content={`${
-            process.env.DEPLOY_PRIME_URL ?? "https://pakapas.netlify.app"
-          }/api/survey/og?token=${query.token}`}
+          content={`https://pakapas.netlify.app/api/survey/og?token=${query.token}`}
         />
         <meta property="og:image:alt" content={title} />
         <meta property="og:image:width" content="1200" />
@@ -109,6 +105,7 @@ export default function Share({ name, section }: TokenData) {
           display="flex"
           alignItems={"center"}
           justifyContent="center"
+          textAlign={"center"}
         >
           <Text color="orange.700" fontWeight={"medium"}>
             คุณก็สามารถร่วมเป็นส่วนหนึ่งของแบบสอบถามนี้ได้ ทำเลย!
