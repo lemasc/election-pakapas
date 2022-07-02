@@ -23,7 +23,7 @@ import Link from "next/link";
 import Title from "../../components/Title";
 import { AuthStatus } from "../../components/survey";
 import { useAuth, useSurveyAnswered } from "../../utils/userStore";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { scrollToTarget } from "../../utils/scroll";
@@ -41,17 +41,53 @@ type ApiResult = {
   message: string;
 };
 
+type ShareParams = {
+  quote: string;
+  href: string;
+  hashtag: string;
+};
+
 declare var FB: {
   ui: (
-    props: { method: "share"; href: string },
+    props: { method: "share" } & ShareParams,
     callback: (err: any) => void
   ) => void;
+};
+
+const getShareParams = (name: string, token: string): ShareParams => {
+  return {
+    quote: `${name} ได้ทำแบบสอบถามของภคภ1ส คุณก็สามารถร่วมเป็นส่วนหนึ่งได้ ทำเลย!`,
+    //href: `${window.location.origin}/survey/share?token=${token}`,
+    href: "https://pakapas.netlify.app",
+    hashtag: "#ภคภ1ส",
+  };
+};
+
+const requestImage = (token: string) => {
+  return fetch(`/api/survey/story?token=${token}`).then((res) => res.blob());
 };
 
 function SurveyShareImage({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<string>();
-  const nameRef = useRef<string>("");
+  const imageRef = useRef<HTMLImageElement | null>();
+  const nameRef = useRef<string>(
+    localStorage.getItem("survey-share-name") ??
+      useAuth.getState().metadata?.name ??
+      ""
+  );
+
+  useEffect(() => {
+    (async () => {
+      if (!token || !imageRef.current) return;
+      const image = await requestImage(token);
+      if (imageRef.current.src) {
+        window.URL.revokeObjectURL(imageRef.current.src);
+      }
+      imageRef.current.src = window.URL.createObjectURL(image);
+    })();
+  }, [token]);
+
   const submit = async () => {
     const user = useAuth.getState().user;
     if (nameRef.current === "" || !user) {
@@ -70,11 +106,56 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
           },
         }
       );
+      localStorage.setItem("survey-share-name", nameRef.current);
       setToken(data.message);
     } catch (err) {
       console.error(err);
     }
   };
+
+  const downloadImage = useCallback(() => {
+    console.log(imageRef.current?.src);
+    if (imageRef.current?.src) {
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.href = imageRef.current?.src;
+      a.download = `survey-${nameRef.current}-${new Date().valueOf()}`;
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+      }, 0);
+    }
+  }, []);
+
+  const lineLink = useMemo(() => {
+    if (!token) return;
+    const params = getShareParams(nameRef.current, token);
+    return `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
+      params.href
+    )}`;
+  }, [token]);
+
+  const twitterLink = useMemo(() => {
+    if (!token) return;
+    const params = getShareParams(nameRef.current, token);
+    const url = new URLSearchParams();
+    url.append("text", params.quote);
+    url.append("url", params.href);
+    url.append("hashtags", params.hashtag.replace("#", ""));
+    return `https://twitter.com/share?${url.toString()}`;
+  }, [token]);
+
+  const openFacebookShare = useCallback(() => {
+    if (!token) return;
+    FB.ui(
+      {
+        method: "share",
+        ...getShareParams(nameRef.current, token),
+      },
+      console.error
+    );
+  }, [token]);
+
   return (
     <Box mt="4" border="2px" borderColor="orange.500" rounded="lg">
       <Box
@@ -114,21 +195,25 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
             <b>เพื่อโรงเรียนที่นักเรียนมีส่วนร่วม</b>
           </Text>
           <Text color="orange.500" fontWeight={"bold"}>
-            เมื่อทำแบบสอบถามของฝ่ายใดเสร็จ ตราประจำฝ่ายนั้นก็จะแสดงขึ้นมาในภาพ
+            เมื่อทำแบบสอบถามของฝ่ายใดเสร็จ
+            ตราประจำฝ่ายนั้นก็จะแสดงขึ้นมาในภาพที่แชร์
             มาเก็บให้ครบทุกฝ่ายกันเถอะ !
           </Text>
           <Stack spacing="4" py="2">
             <FormControl>
-              <FormLabel htmlFor="name">ชื่อผู้ทำแบบสอบถาม</FormLabel>
+              <FormLabel htmlFor="name">
+                ชื่อผู้ทำแบบสอบถาม (แสดงบนภาพ)
+              </FormLabel>
               <Input
                 isDisabled={loading}
                 bg="white"
+                defaultValue={nameRef.current}
                 onChange={(e) => {
                   nameRef.current = e.target.value.trim();
                 }}
                 borderColor="gray.400"
                 focusBorderColor="orange.400"
-                placeholder="กรอกชื่อผู้ทำแบบสอบถาม"
+                placeholder="กรอกชื่อผู้ที่ต้องการให้แสดงบนภาพ"
               />
             </FormControl>
 
@@ -137,79 +222,77 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               onClick={submit}
               colorScheme={"orange"}
             >
-              บันทึก
+              {loading ? "กำลังโหลด" : "บันทึก"}
             </Button>
           </Stack>
-          <Stack spacing="3">
-            <Button
-              leftIcon={<DownloadIcon />}
-              colorScheme="orange"
-              variant="outline"
-            >
-              บันทึกลงในอุปกรณ์
-            </Button>
-            <Button
-              onClick={() => {
-                FB.ui(
-                  {
-                    method: "share",
-                    href: "https://pakapas.netlify.app",
-                  },
-                  console.error
-                );
-              }}
-              leftIcon={
-                <FontAwesomeIcon
-                  size="lg"
-                  className="-mt-0.5"
-                  icon={faFacebook}
-                />
-              }
-              colorScheme="facebook"
-            >
-              แชร์ไปยัง Facebook
-            </Button>
-            <a
-              href="https://social-plugins.line.me/lineit/share?url=https://pakapas.netlify.app"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
+          {!loading && token && (
+            <Stack spacing="3">
+              <Text fontWeight="medium">ตัวเลือกการแชร์</Text>
               <Button
-                w="full"
+                onClick={() => downloadImage()}
+                bg="white"
+                leftIcon={<DownloadIcon />}
+                colorScheme="orange"
+                variant="outline"
+              >
+                บันทึกลงในอุปกรณ์
+              </Button>
+              <a href={twitterLink} target="_blank" rel="noreferrer noopener">
+                <Button
+                  w="full"
+                  leftIcon={
+                    <FontAwesomeIcon
+                      size="lg"
+                      className="-mt-0.5"
+                      icon={faTwitter}
+                    />
+                  }
+                  colorScheme="twitter"
+                >
+                  แชร์ไปยัง Twitter
+                </Button>
+              </a>
+              <Button
+                onClick={openFacebookShare}
                 leftIcon={
                   <FontAwesomeIcon
                     size="lg"
                     className="-mt-0.5"
-                    icon={faLine}
+                    icon={faFacebook}
                   />
                 }
-                colorScheme="green"
+                colorScheme="facebook"
               >
-                แชร์ไปยัง LINE
+                แชร์ไปยัง Facebook
               </Button>
-            </a>
-            <Button
-              leftIcon={
-                <FontAwesomeIcon
-                  size="lg"
-                  className="-mt-0.5"
-                  icon={faTwitter}
-                />
-              }
-              colorScheme="twitter"
-            >
-              แชร์ไปยัง Twitter
-            </Button>
-          </Stack>
+              <a href={lineLink} target="_blank" rel="noreferrer noopener">
+                <Button
+                  w="full"
+                  leftIcon={
+                    <FontAwesomeIcon
+                      size="lg"
+                      className="-mt-0.5"
+                      icon={faLine}
+                    />
+                  }
+                  colorScheme="green"
+                >
+                  แชร์ไปยัง LINE
+                </Button>
+              </a>
+            </Stack>
+          )}
         </Stack>
         <Box>
           {token && (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               alt="Image"
-              width={960}
-              height={1706}
-              onLoadingComplete={() => setLoading(false)}
-              className={`rounded-md ${loading ? "" : "hidden"}`}
+              width={"960"}
+              height={"1706"}
+              ref={(ref) => (imageRef.current = ref)}
+              onLoad={() => setLoading(false)}
+              className={`rounded-md ${loading ? "bg-gray-100" : ""}`}
               src={`/api/survey/story?token=${token}`}
             />
           )}

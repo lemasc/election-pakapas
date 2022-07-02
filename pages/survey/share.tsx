@@ -5,9 +5,12 @@ import { TokenData, sessionOptions } from "../../utils/survey";
 import { unsealData } from "iron-session";
 import Container from "../../components/layout/container";
 import Link from "next/link";
-import { pageDescription } from "../../utils/metadata";
+import { pageDescription, sections } from "../../utils/metadata";
 import Image from "next/image";
 import surveyBox from "../../public/images/survey_box.jpg";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 const verifyProps = (props: Record<string, any>): props is TokenData => {
   return (
@@ -45,8 +48,33 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 };
 
 export default function Share({ name, section }: TokenData) {
+  const { pathname, query } = useRouter();
+  const title = useMemo(() => `${name} ได้ทำแบบสอบถามของภคภ1สแล้ว`, [name]);
   return (
     <Container transparent>
+      <Head>
+        <title>{title}</title>
+        <meta
+          property="og:url"
+          content={`https://pakapas.netlify.app${pathname}?token=${query.token}`}
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta
+          property="og:description"
+          key="description"
+          content={pageDescription["/survey"]}
+        />
+        <meta
+          property="og:image"
+          key="image"
+          content={`/api/survey/og?token=${query.token}`}
+        />
+        <meta property="og:image:alt" content={title} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="628" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
       <Box className="flex flex-col h-full min-h-screen w-full">
         <Box className="px-5 flex flex-1 items-center justify-center flex-col bg-gradient-to-b from-orange-300 to-orange-500 w-full">
           <Stack
@@ -55,10 +83,25 @@ export default function Share({ name, section }: TokenData) {
           >
             <Heading>{name}</Heading>
             <Text fontWeight={"medium"}>
-              ได้ทำแบบสอบถามเกี่ยวกับนโยบายของภคภๅสแล้ว
+              ได้ทำแบบสอบถามเกี่ยวกับนโยบายของภคภ1สแล้ว
               <br />
               มาร่วมเป็นอีก 1 เสียงในการกำหนดทิศทางของโรงเรียนกันเถอะ
             </Text>
+            <Stack flexDirection="row" gap="4">
+              {section.map((section) => (
+                <Image
+                  key={section}
+                  alt={sections[section]}
+                  src={`/images/${
+                    section === "main" ? "logo_circle" : section
+                  }.png`}
+                  width={50}
+                  height={50}
+                  draggable={false}
+                  className="saturate-50"
+                />
+              ))}
+            </Stack>
           </Stack>
         </Box>
         <Box
@@ -68,7 +111,7 @@ export default function Share({ name, section }: TokenData) {
           alignItems={"center"}
           justifyContent="center"
         >
-          <Text fontWeight={"medium"}>
+          <Text color="orange.700" fontWeight={"medium"}>
             คุณก็สามารถร่วมเป็นส่วนหนึ่งของแบบสอบถามนี้ได้ ทำเลย!
           </Text>
         </Box>
