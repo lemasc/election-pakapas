@@ -42,6 +42,7 @@ import { logEvent, withAnalytics } from "../../utils/analytics";
 type ApiResult = {
   success: boolean;
   message: string;
+  snapshot?: string;
 };
 
 type ShareParams = {
@@ -80,17 +81,6 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
       ""
   );
 
-  useEffect(() => {
-    (async () => {
-      if (!token || !imageRef.current) return;
-      const image = await requestImage(token);
-      if (imageRef.current.src) {
-        window.URL.revokeObjectURL(imageRef.current.src);
-      }
-      imageRef.current.src = window.URL.createObjectURL(image);
-    })();
-  }, [token]);
-
   const submit = async () => {
     const user = useAuth.getState().user;
     if (nameRef.current === "" || !user) {
@@ -109,8 +99,15 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
           },
         }
       );
+      setToken(data.snapshot);
+      const image = await requestImage(data.message);
+      if (imageRef.current) {
+        if (imageRef.current.src) {
+          window.URL.revokeObjectURL(imageRef.current.src);
+        }
+        imageRef.current.src = window.URL.createObjectURL(image);
+      }
       localStorage.setItem("survey-share-name", nameRef.current);
-      setToken(data.message);
     } catch (err) {
       console.error(err);
     }
@@ -321,15 +318,13 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
         </Stack>
         <Box>
           {token && (
-            // eslint-disable-next-line @next/next/no-img-element
+            // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
             <img
-              alt="Image"
               width={"960"}
               height={"1706"}
               ref={(ref) => (imageRef.current = ref)}
               onLoad={() => setLoading(false)}
               className={`rounded-md ${loading ? "bg-gray-100" : ""}`}
-              src={`/api/survey/story?token=${token}`}
             />
           )}
         </Box>
