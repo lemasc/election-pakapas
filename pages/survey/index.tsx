@@ -13,6 +13,7 @@ import {
   FormLabel,
   Input,
   Link as UILink,
+  useToast,
 } from "@chakra-ui/react";
 
 import { Sections, sections } from "../../utils/metadata";
@@ -28,13 +29,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { scrollToTarget } from "../../utils/scroll";
 import axios from "axios";
-import { DownloadIcon } from "@chakra-ui/icons";
+import { CopyIcon, DownloadIcon } from "@chakra-ui/icons";
 import {
   faFacebook,
   faLine,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import Script from "next/script";
+import { logEvent, withAnalytics } from "../../utils/analytics";
 
 type ApiResult = {
   success: boolean;
@@ -57,8 +59,7 @@ declare var FB: {
 const getShareParams = (name: string, token: string): ShareParams => {
   return {
     quote: `${name} ได้ทำแบบสอบถามของภคภ1ส คุณก็สามารถร่วมเป็นส่วนหนึ่งได้ ทำเลย!`,
-    //href: `${window.location.origin}/survey/share?token=${token}`,
-    href: "https://pakapas.netlify.app",
+    href: `${window.location.origin}/survey/share?token=${token}`,
     hashtag: "#ภคภ1ส",
   };
 };
@@ -68,6 +69,7 @@ const requestImage = (token: string) => {
 };
 
 function SurveyShareImage({ onClose }: { onClose: () => void }) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState<string>();
   const imageRef = useRef<HTMLImageElement | null>();
@@ -113,48 +115,73 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const downloadImage = useCallback(() => {
-    console.log(imageRef.current?.src);
-    if (imageRef.current?.src) {
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.href = imageRef.current?.src;
-      a.download = `survey-${nameRef.current}-${new Date().valueOf()}`;
-      a.click();
-      setTimeout(() => {
-        document.body.removeChild(a);
-      }, 0);
-    }
-  }, []);
+  const share = useCallback(
+    (method: "save" | "facebook" | "line" | "twitter" | "clipboard") => {
+      if (!token) return;
+      withAnalytics((a) => {
+        logEvent(a, "share", {
+          content_type: method === "save" ? "image" : "link",
+          method,
+          item_id: useAuth.getState().user?.uid,
+        });
+      });
+      if (method === "save") {
+        if (imageRef.current?.src) {
+          const a = document.createElement("a");
+          document.body.appendChild(a);
+          a.href = imageRef.current?.src;
+          a.download = `survey-${nameRef.current}-${new Date().valueOf()}`;
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+          }, 0);
+        }
+        return;
+      }
 
-  const lineLink = useMemo(() => {
-    if (!token) return;
-    const params = getShareParams(nameRef.current, token);
-    return `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
-      params.href
-    )}`;
-  }, [token]);
+      const params = getShareParams(nameRef.current, token);
 
-  const twitterLink = useMemo(() => {
-    if (!token) return;
-    const params = getShareParams(nameRef.current, token);
-    const url = new URLSearchParams();
-    url.append("text", params.quote);
-    url.append("url", params.href);
-    url.append("hashtags", params.hashtag.replace("#", ""));
-    return `https://twitter.com/share?${url.toString()}`;
-  }, [token]);
+      if (method === "clipboard") {
+        navigator.clipboard.writeText(params.href);
+        toast({
+          title: "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+      if (method === "facebook") {
+        FB.ui(
+          {
+            method: "share",
+            ...params,
+          },
+          console.error
+        );
+        return;
+      }
 
-  const openFacebookShare = useCallback(() => {
-    if (!token) return;
-    FB.ui(
-      {
-        method: "share",
-        ...getShareParams(nameRef.current, token),
-      },
-      console.error
-    );
-  }, [token]);
+      let targetUrl: string;
+      switch (method) {
+        case "line":
+          targetUrl = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(
+            params.href
+          )}`;
+          break;
+        case "twitter":
+          const url = new URLSearchParams();
+          url.append("text", params.quote);
+          url.append("url", params.href);
+          url.append("hashtags", params.hashtag.replace("#", ""));
+          targetUrl = `https://twitter.com/share?${url.toString()}`;
+      }
+      if (targetUrl) {
+        window.open(targetUrl, "_blank", "noopener,noreferrer");
+      }
+    },
+    [token, toast]
+  );
 
   return (
     <Box mt="4" border="2px" borderColor="orange.500" rounded="lg">
@@ -222,14 +249,14 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               onClick={submit}
               colorScheme={"orange"}
             >
-              {loading ? "กำลังโหลด" : "บันทึก"}
+              {loading ? "กำลังโหลด..." : "บันทึก"}
             </Button>
           </Stack>
           {!loading && token && (
             <Stack spacing="3">
               <Text fontWeight="medium">ตัวเลือกการแชร์</Text>
               <Button
-                onClick={() => downloadImage()}
+                onClick={() => share("save")}
                 bg="white"
                 leftIcon={<DownloadIcon />}
                 colorScheme="orange"
@@ -237,23 +264,32 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               >
                 บันทึกลงในอุปกรณ์
               </Button>
-              <a href={twitterLink} target="_blank" rel="noreferrer noopener">
-                <Button
-                  w="full"
-                  leftIcon={
-                    <FontAwesomeIcon
-                      size="lg"
-                      className="-mt-0.5"
-                      icon={faTwitter}
-                    />
-                  }
-                  colorScheme="twitter"
-                >
-                  แชร์ไปยัง Twitter
-                </Button>
-              </a>
               <Button
-                onClick={openFacebookShare}
+                onClick={() => share("clipboard")}
+                bg="white"
+                leftIcon={<CopyIcon />}
+                colorScheme="blackAlpha"
+                color="black"
+                variant="outline"
+              >
+                คัดลอกลิงก์
+              </Button>
+              <Button
+                w="full"
+                onClick={() => share("twitter")}
+                leftIcon={
+                  <FontAwesomeIcon
+                    size="lg"
+                    className="-mt-0.5"
+                    icon={faTwitter}
+                  />
+                }
+                colorScheme="twitter"
+              >
+                แชร์ไปยัง Twitter
+              </Button>
+              <Button
+                onClick={() => share("facebook")}
                 leftIcon={
                   <FontAwesomeIcon
                     size="lg"
@@ -265,21 +301,20 @@ function SurveyShareImage({ onClose }: { onClose: () => void }) {
               >
                 แชร์ไปยัง Facebook
               </Button>
-              <a href={lineLink} target="_blank" rel="noreferrer noopener">
-                <Button
-                  w="full"
-                  leftIcon={
-                    <FontAwesomeIcon
-                      size="lg"
-                      className="-mt-0.5"
-                      icon={faLine}
-                    />
-                  }
-                  colorScheme="green"
-                >
-                  แชร์ไปยัง LINE
-                </Button>
-              </a>
+              <Button
+                onClick={() => share("line")}
+                w="full"
+                leftIcon={
+                  <FontAwesomeIcon
+                    size="lg"
+                    className="-mt-0.5"
+                    icon={faLine}
+                  />
+                }
+                colorScheme="green"
+              >
+                แชร์ไปยัง LINE
+              </Button>
             </Stack>
           )}
         </Stack>

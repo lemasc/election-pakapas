@@ -68,7 +68,7 @@ export default function Share({ name, section }: TokenData) {
         <meta
           property="og:image"
           key="image"
-          content={`/api/survey/og?token=${query.token}`}
+          content={`https://pakapas.netlify.app/api/survey/og?token=${query.token}`}
         />
         <meta property="og:image:alt" content={title} />
         <meta property="og:image:width" content="1200" />

@@ -1,7 +1,7 @@
 import create from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { auth, db } from "./firebase";
-import { withAnalytics } from "./analytics";
+import { logEvent, withAnalytics } from "./analytics";
 import { setUserId } from "@firebase/analytics";
 import {
   signInAnonymously,
@@ -36,7 +36,11 @@ type AuthStore = {
   user: User | null | undefined;
   metadata: Metadata | null | undefined;
   setMetadata: (data: Omit<Metadata, "sections">) => Promise<void>;
-  answerSurvey: (section: Sections, values: number[]) => Promise<void>;
+  answerSurvey: (
+    section: Sections,
+    values: number[],
+    comment?: string
+  ) => Promise<void>;
   signOut: () => Promise<void>;
   showProfile: boolean;
 };
@@ -63,7 +67,7 @@ export const useAuth = create(
         }
       );
     },
-    answerSurvey: async (section, values) => {
+    answerSurvey: async (section, values, comment) => {
       const snapshot = get();
       if (!snapshot.user || !snapshot.metadata) {
         throw new Error("Unauthorizard");
@@ -73,6 +77,7 @@ export const useAuth = create(
       }
       return updateDoc(doc(db, "users", snapshot.user.uid), {
         [`sections.${section}`]: values,
+        ...(comment ? { [`comment.${section}`]: comment } : {}),
         updatedAt: serverTimestamp(),
       });
     },
@@ -87,7 +92,10 @@ export const useAuthInit = () => {
     () =>
       onIdTokenChanged(auth, async (curUser) => {
         if (curUser) {
-          withAnalytics((a) => setUserId(a, curUser.uid));
+          withAnalytics((a) => {
+            setUserId(a, curUser.uid);
+            logEvent(a, "login");
+          });
           useAuth.setState({ user: curUser });
         } else {
           useAuth.setState({ user: null });
