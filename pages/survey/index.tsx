@@ -38,7 +38,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import Script from "next/script";
 import { logEvent, withAnalytics } from "../../utils/analytics";
-import InApp from "../../utils/inapp";
 
 type ApiResult = {
   success: boolean;
