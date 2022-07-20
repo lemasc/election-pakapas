@@ -618,7 +618,7 @@ export default function Com() {
           className={`pagebreak grid grid-cols-2 gap-6`}
         >
           {data.map((d, i) => {
-            const stableId = `item_g${group}_i${i}`;
+            const stableId = `item_${group * 8 + i + 1}`;
             const name = getName(d, stableId);
             const desc = getDesc(d);
             return (
