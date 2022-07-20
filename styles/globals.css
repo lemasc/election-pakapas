@@ -52,3 +52,9 @@
 .form-container > b {
   @apply font-medium;
 }
+
+@media print {
+  .pagebreak {
+    break-after: page;
+  }
+}
