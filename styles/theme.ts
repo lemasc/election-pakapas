@@ -6,7 +6,7 @@ const config: ThemeConfig = {
 export const theme = extendTheme(
   {
     fonts: {
-      body: "Anakotmai, system-ui, sans-serif",
+      body: "Sarabun, system-ui, sans-serif",
       heading: "Anakotmai, system-ui, sans-serif",
     },
     components: {
